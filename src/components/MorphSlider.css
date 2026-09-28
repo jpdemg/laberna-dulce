@@ -87,22 +87,22 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--color-line, rgba(17, 17, 15, 0.15));
   border-radius: 50%;
-  color: #fff;
-  background: rgba(12, 12, 14, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-ink, #11110f);
+  background: var(--color-bg, #fdf9ec);
   cursor: pointer;
   transition:
     transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.25s ease,
+    color 0.25s ease,
     border-color 0.25s ease;
 }
 
 .morph-slider-btn:hover {
-  background: rgba(24, 24, 28, 0.6);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--color-accent, #a07b54);
+  border-color: var(--color-accent, #a07b54);
+  color: var(--color-white, #fff);
   transform: scale(1.06);
 }
 
@@ -111,7 +111,7 @@
 }
 
 .morph-slider-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline: 2px solid var(--color-ink, #11110f);
   outline-offset: 2px;
 }
 
