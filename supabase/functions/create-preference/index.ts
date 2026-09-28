@@ -118,10 +118,13 @@ Deno.serve(async (req) => {
       return json({ error: 'Erro ao criar preferência de pagamento', details: preference }, 502)
     }
 
-    await admin.from('orders').update({ mp_preference_id: preference.id }).eq('id', order.id)
-
     const useSandbox = Deno.env.get('MP_USE_SANDBOX') === 'true'
     const checkoutUrl = useSandbox ? preference.sandbox_init_point : preference.init_point
+
+    await admin
+      .from('orders')
+      .update({ mp_preference_id: preference.id, checkout_url: checkoutUrl })
+      .eq('id', order.id)
 
     return json({ init_point: checkoutUrl, order_id: order.id })
   } catch (error) {

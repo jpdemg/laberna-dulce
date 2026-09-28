@@ -781,13 +781,25 @@
 }
 
 .account-page__order {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   padding: 1rem;
   border: 1px solid var(--color-line);
   border-radius: 4px;
   font-size: 0.85rem;
+}
+
+.account-page__order-info {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.account-page__resume {
+  align-self: flex-start;
+  padding: 0.5em 1.2em;
+  font-size: 0.75rem;
 }
 
 .order-status {
@@ -1039,7 +1051,7 @@
     gap: 0.5rem;
   }
 
-  .account-page__order {
+  .account-page__order-info {
     grid-template-columns: 1fr 1fr;
   }
 
