@@ -31,12 +31,22 @@ Deno.serve(async (req) => {
 
     const status =
       payment.status === 'approved' ? 'paid' : payment.status === 'rejected' ? 'cancelled' : 'pending'
+    const paymentMethod = payment.payment_type_id ?? null
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-    await admin
+    const { data: order } = await admin
       .from('orders')
-      .update({ status, mp_payment_id: String(payment.id) })
+      .update({ status, mp_payment_id: String(payment.id), payment_method: paymentMethod })
       .eq('id', orderId)
+      .select('user_id')
+      .single()
+
+    if (order && paymentMethod) {
+      await admin
+        .from('profiles')
+        .update({ last_payment_method: paymentMethod })
+        .eq('id', order.user_id)
+    }
 
     return new Response('ok', { status: 200 })
   } catch (error) {

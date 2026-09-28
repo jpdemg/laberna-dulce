@@ -1,41 +1,72 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { useProfile } from '../hooks/useProfile'
 import { supabase } from '../lib/supabaseClient'
 import { formatBRL } from '../lib/format'
+import { fetchAddressByCep } from '../lib/viacep'
 
 const emptyAddress = {
   street: '',
   number: '',
   complement: '',
   neighborhood: '',
-  city: 'São Paulo',
-  state: 'SP',
+  city: '',
+  state: '',
   zip: '',
-  phone: '',
 }
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart()
   const { user } = useAuth()
+  const { profile, loading: profileLoading, saveProfile } = useProfile()
   const navigate = useNavigate()
   const [address, setAddress] = useState(emptyAddress)
+  const [phone, setPhone] = useState('')
+  const [cepLoading, setCepLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    if (profile?.address) setAddress((current) => ({ ...current, ...profile.address }))
+    if (profile?.phone) setPhone(profile.phone)
+  }, [profile])
+
   const updateField = (field) => (event) =>
     setAddress((current) => ({ ...current, [field]: event.target.value }))
+
+  const handleCepBlur = async () => {
+    const found = await fetchAddressByCep(address.zip)
+    if (!found) return
+    setCepLoading(true)
+    setAddress((current) => ({ ...current, ...found }))
+    setCepLoading(false)
+  }
+
+  const handleCepChange = (event) => {
+    updateField('zip')(event)
+    const digits = event.target.value.replace(/\D/g, '')
+    if (digits.length === 8) {
+      setCepLoading(true)
+      fetchAddressByCep(digits).then((found) => {
+        setCepLoading(false)
+        if (found) setAddress((current) => ({ ...current, ...found }))
+      })
+    }
+  }
 
   const handlePay = async (event) => {
     event.preventDefault()
     setError('')
     setLoading(true)
 
+    await saveProfile({ phone, address })
+
     const { data, error: fnError } = await supabase.functions.invoke('create-preference', {
       body: {
         items: items.map((item) => ({ id: item.id, quantity: item.quantity })),
-        address,
+        address: { ...address, phone },
       },
     })
 
@@ -73,6 +104,20 @@ export default function Checkout() {
             E-mail
             <input value={user?.email ?? ''} disabled />
           </label>
+
+          <label>
+            CEP {cepLoading && '(buscando endereço...)'}
+            {profileLoading && '(carregando dados salvos...)'}
+            <input
+              required
+              inputMode="numeric"
+              placeholder="00000-000"
+              value={address.zip}
+              onChange={handleCepChange}
+              onBlur={handleCepBlur}
+            />
+          </label>
+
           <label>
             Rua
             <input required value={address.street} onChange={updateField('street')} />
@@ -100,15 +145,14 @@ export default function Checkout() {
               Estado
               <input required value={address.state} onChange={updateField('state')} maxLength={2} />
             </label>
-            <label>
-              CEP
-              <input required value={address.zip} onChange={updateField('zip')} />
-            </label>
           </div>
           <label>
             Telefone
-            <input required value={address.phone} onChange={updateField('phone')} />
+            <input required value={phone} onChange={(e) => setPhone(e.target.value)} />
           </label>
+          <p className="checkout-form__hint">
+            Salvamos esse endereço na sua conta para a próxima compra.
+          </p>
         </fieldset>
 
         <div className="cart-summary">
