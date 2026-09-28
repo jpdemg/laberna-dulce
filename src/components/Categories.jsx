@@ -8,7 +8,7 @@ export default function Categories() {
     <section className="categories" aria-labelledby="categories-title">
       <header className="categories__intro">
         <Daisy size={48} />
-        <h2 id="categories-title">
+        <h2 id="categories-title" className="reveal">
           {catalogIntro.title}
           <em>{catalogIntro.emphasis}</em>
         </h2>
@@ -20,9 +20,9 @@ export default function Categories() {
 
       <ul className="categories__grid">
         {catalogIntro.categories.map((category, index) => (
-          <li key={category.label}>
+          <li key={category.label} className="reveal" style={{ '--reveal-delay': `${index * 0.12}s` }}>
             <Link to={category.href}>
-              <Placeholder label={category.label} variant={index} />
+              <Placeholder label={category.label} variant={index} reveal={false} />
               <h3>{category.label}</h3>
             </Link>
           </li>

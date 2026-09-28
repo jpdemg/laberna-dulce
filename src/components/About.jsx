@@ -9,7 +9,7 @@ export default function About() {
       <Placeholder label="foto das sócias" variant={1} className="about__art" />
       <div className="about__content">
         <Daisy size={40} />
-        <h2 id="about-title">{about.title}</h2>
+        <h2 id="about-title" className="reveal">{about.title}</h2>
         {about.paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}

@@ -17,8 +17,10 @@ export default function Hero() {
       <Placeholder label="foto de destaque" variant={index} className="hero__art" />
 
       <div className="hero__card">
-        <p className="eyebrow">{slide.eyebrow}</p>
-        <h1 id="hero-title">{slide.title}</h1>
+        <p className="eyebrow reveal">{slide.eyebrow}</p>
+        <h1 id="hero-title" className="reveal" style={{ '--reveal-delay': '0.15s' }}>
+          {slide.title}
+        </h1>
         {isExternal ? (
           <a className="link-arrow" href={slide.href}>
             {slide.cta}

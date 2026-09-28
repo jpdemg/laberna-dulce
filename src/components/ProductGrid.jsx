@@ -4,8 +4,12 @@ export default function ProductGrid({ products }) {
   return (
     <ul className="product-grid">
       {products.map((product, index) => (
-        <li key={product.name} className="product-card">
-          <Placeholder label={product.name} variant={index} seal tag={product.tag} />
+        <li
+          key={product.name}
+          className="product-card reveal"
+          style={{ '--reveal-delay': `${(index % 4) * 0.12}s` }}
+        >
+          <Placeholder label={product.name} variant={index} seal tag={product.tag} reveal={false} />
           <h3>{product.name}</h3>
           <p className="product-card__price">{product.price}</p>
           <button type="button" className="btn btn--add">

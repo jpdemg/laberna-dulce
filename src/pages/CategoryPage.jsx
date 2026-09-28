@@ -18,7 +18,7 @@ export default function CategoryPage({ slug }) {
 
       <article className="category-banner">
         <Placeholder label={category.label} variant={0} className="category-banner__art" />
-        <div className="category-banner__content">
+        <div className="category-banner__content reveal">
           <Daisy size={36} tone="light" />
           <p className="eyebrow">{category.banner.eyebrow}</p>
           <p>{category.banner.body}</p>
@@ -26,7 +26,7 @@ export default function CategoryPage({ slug }) {
       </article>
 
       <div className="category-page__toolbar">
-        <h1>{category.label}</h1>
+        <h1 className="reveal">{category.label}</h1>
         <label className="category-page__sort">
           Ordenar:
           <select defaultValue="relevancia">

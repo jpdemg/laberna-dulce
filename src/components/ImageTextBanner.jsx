@@ -20,12 +20,12 @@ export default function ImageTextBanner({
       <Placeholder label={imageLabel} variant={1} className="banner__art" />
       <div className="banner__content">
         <Daisy size={40} tone={tone === 'dark' ? 'light' : 'ink'} />
-        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h2>
+        {eyebrow && <p className="eyebrow reveal">{eyebrow}</p>}
+        <h2 className="reveal">
           {title}
           {emphasis && <em>{emphasis}</em>}
         </h2>
-        {body && <p className="banner__body">{body}</p>}
+        {body && <p className="banner__body reveal">{body}</p>}
         {cta && href && (
           isExternal ? (
             <a className={`btn ${tone === 'dark' ? 'btn--light' : 'btn--primary'}`} href={href}>

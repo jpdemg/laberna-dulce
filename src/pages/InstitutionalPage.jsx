@@ -10,12 +10,12 @@ function PlainSection({ title, emphasis, body, imageLabel, reverse }) {
       <Placeholder label={imageLabel} variant={2} className="institutional-plain__art" />
       <div className="institutional-plain__content">
         <Daisy size={36} />
-        <h2>
+        <h2 className="reveal">
           {title}
           {emphasis && <em>{emphasis}</em>}
         </h2>
         {body.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
+          <p key={paragraph} className="reveal">{paragraph}</p>
         ))}
       </div>
     </article>
@@ -26,8 +26,8 @@ function GallerySection({ count = 4 }) {
   return (
     <ul className="institutional-gallery">
       {Array.from({ length: count }).map((_, index) => (
-        <li key={index}>
-          <Placeholder label={`foto ${index + 1}`} variant={index} />
+        <li key={index} className="reveal" style={{ '--reveal-delay': `${(index % 4) * 0.1}s` }}>
+          <Placeholder label={`foto ${index + 1}`} variant={index} reveal={false} />
         </li>
       ))}
     </ul>

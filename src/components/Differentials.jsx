@@ -12,7 +12,7 @@ export default function Differentials() {
     <section className="differentials" id="diferenciais" aria-label="Diferenciais">
       <ul>
         {differentials.map((item, index) => (
-          <li key={item.title}>
+          <li key={item.title} className="reveal" style={{ '--reveal-delay': `${index * 0.12}s` }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">{icons[index % icons.length]}</svg>
             <h3>{item.title}</h3>
             <p>{item.text}</p>
