@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
 import CategoryPage from './pages/CategoryPage'
+import ProductDetail from './pages/ProductDetail'
 import InstitutionalPage from './pages/InstitutionalPage'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
@@ -31,6 +32,7 @@ function App() {
               <Route path="sobremesas" element={<CategoryPage slug="sobremesas" />} />
               <Route path="docinhos" element={<CategoryPage slug="docinhos" />} />
               <Route path="linha-to-go" element={<CategoryPage slug="linha-to-go" />} />
+              <Route path="produto/:id" element={<ProductDetail />} />
               <Route path="atelie" element={<InstitutionalPage slug="atelie" />} />
               <Route path="festas-e-eventos" element={<InstitutionalPage slug="festas-e-eventos" />} />
               <Route path="personalizados" element={<InstitutionalPage slug="personalizados" />} />

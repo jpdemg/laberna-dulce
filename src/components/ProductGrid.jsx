@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Placeholder from './Placeholder'
 import { useCart } from '../context/CartContext'
 import { formatBRL } from '../lib/format'
@@ -8,7 +9,9 @@ export default function ProductGrid({ products }) {
   const [addedId, setAddedId] = useState(null)
 
   const handleAdd = (product) => {
-    addItem(product, 1)
+    const defaultSize = product.sizes?.[1]?.label ?? product.sizes?.[0]?.label ?? null
+    const multiplier = product.sizes?.find((size) => size.label === defaultSize)?.multiplier ?? 1
+    addItem({ ...product, price: product.price * multiplier, size: defaultSize }, 1)
     setAddedId(product.id)
     setTimeout(() => setAddedId((current) => (current === product.id ? null : current)), 1500)
   }
@@ -16,13 +19,11 @@ export default function ProductGrid({ products }) {
   return (
     <ul className="product-grid">
       {products.map((product, index) => (
-        <li
-          key={product.id}
-          className="product-card reveal"
-          style={{ '--reveal-delay': `${(index % 4) * 0.12}s` }}
-        >
-          <Placeholder label={product.name} variant={index} seal tag={product.tag} reveal={false} />
-          <h3>{product.name}</h3>
+        <li key={product.id} className="product-card reveal" style={{ '--reveal-delay': `${(index % 4) * 0.12}s` }}>
+          <Link to={`/produto/${product.id}`} className="product-card__link">
+            <Placeholder label={product.name} variant={index} seal tag={product.tag} reveal={false} />
+            <h3>{product.name}</h3>
+          </Link>
           <p className="product-card__price">{formatBRL(product.price)}</p>
           <button type="button" className="btn btn--add" onClick={() => handleAdd(product)}>
             <svg viewBox="0 0 24 24" aria-hidden="true">

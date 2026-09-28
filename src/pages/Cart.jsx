@@ -23,19 +23,23 @@ export default function Cart() {
 
       <ul className="cart-list">
         {items.map((item) => (
-          <li key={item.id} className="cart-list__item">
-            <span className="cart-list__name">{item.name}</span>
+          <li key={item.lineKey} className="cart-list__item">
+            <span className="cart-list__name">
+              {item.name}
+              {item.size && <span className="cart-list__size"> · Tamanho {item.size}</span>}
+              {item.notes && <span className="cart-list__notes"> · {item.notes}</span>}
+            </span>
             <div className="cart-list__qty">
-              <button type="button" onClick={() => setQuantity(item.id, item.quantity - 1)}>
+              <button type="button" onClick={() => setQuantity(item.lineKey, item.quantity - 1)}>
                 −
               </button>
               <span>{item.quantity}</span>
-              <button type="button" onClick={() => setQuantity(item.id, item.quantity + 1)}>
+              <button type="button" onClick={() => setQuantity(item.lineKey, item.quantity + 1)}>
                 +
               </button>
             </div>
             <span className="cart-list__price">{formatBRL(item.price * item.quantity)}</span>
-            <button type="button" className="cart-list__remove" onClick={() => removeItem(item.id)}>
+            <button type="button" className="cart-list__remove" onClick={() => removeItem(item.lineKey)}>
               Remover
             </button>
           </li>

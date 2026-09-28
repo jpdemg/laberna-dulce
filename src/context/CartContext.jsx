@@ -12,6 +12,10 @@ function readStoredCart() {
   }
 }
 
+function makeLineKey(id, size) {
+  return `${id}::${size ?? ''}`
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState(readStoredCart)
 
@@ -20,27 +24,43 @@ export function CartProvider({ children }) {
   }, [items])
 
   const addItem = (product, quantity = 1) => {
+    const lineKey = makeLineKey(product.id, product.size)
     setItems((current) => {
-      const existing = current.find((item) => item.id === product.id)
+      const existing = current.find((item) => item.lineKey === lineKey)
       if (existing) {
         return current.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
+          item.lineKey === lineKey
+            ? { ...item, quantity: item.quantity + quantity, notes: product.notes ?? item.notes }
+            : item,
         )
       }
-      return [...current, { id: product.id, name: product.name, price: product.price, quantity }]
+      return [
+        ...current,
+        {
+          lineKey,
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          size: product.size ?? null,
+          notes: product.notes ?? '',
+          quantity,
+        },
+      ]
     })
   }
 
-  const removeItem = (id) => {
-    setItems((current) => current.filter((item) => item.id !== id))
+  const removeItem = (lineKey) => {
+    setItems((current) => current.filter((item) => item.lineKey !== lineKey))
   }
 
-  const setQuantity = (id, quantity) => {
+  const setQuantity = (lineKey, quantity) => {
     if (quantity < 1) {
-      removeItem(id)
+      removeItem(lineKey)
       return
     }
-    setItems((current) => current.map((item) => (item.id === id ? { ...item, quantity } : item)))
+    setItems((current) =>
+      current.map((item) => (item.lineKey === lineKey ? { ...item, quantity } : item)),
+    )
   }
 
   const clearCart = () => setItems([])

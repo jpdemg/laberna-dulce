@@ -93,6 +93,15 @@ export const homeBanners = [
   },
 ]
 
+export const defaultSizes = [
+  { label: 'P', multiplier: 0.8 },
+  { label: 'M', multiplier: 1 },
+  { label: 'G', multiplier: 1.3 },
+]
+
+const defaultDescription =
+  '[Descrição do produto: ingredientes, sabor e o que faz esse item especial. Substitua por um texto real.]'
+
 export const bestSellers = [
   { id: 'best-1', name: '[Produto 1]', price: 65, tag: 'Best seller' },
   { id: 'best-2', name: '[Produto 2]', price: 72 },
@@ -100,7 +109,12 @@ export const bestSellers = [
   { id: 'best-4', name: '[Produto 4]', price: 80, tag: 'Homemade' },
   { id: 'best-5', name: '[Produto 5]', price: 45 },
   { id: 'best-6', name: '[Produto 6]', price: 90 },
-]
+].map((product) => ({
+  ...product,
+  description: defaultDescription,
+  sizes: defaultSizes,
+  gallery: [0, 1, 2],
+}))
 
 export const about = {
   title: 'nossa história',
@@ -143,6 +157,9 @@ const productSet = (prefix, slugPrefix) =>
     name: `[${prefix} ${index + 1}]`,
     price: 40 + index * 7,
     tag: index === 1 ? 'Homemade' : index === 4 ? 'Geléia ou fruta' : '',
+    description: defaultDescription,
+    sizes: defaultSizes,
+    gallery: [0, 1, 2],
   }))
 
 export const categories = {
@@ -299,4 +316,18 @@ export const footer = {
     'Contato',
   ],
   legal: '© [ANO] por [Razão Social LTDA] | CNPJ [00.000.000/0001-00]',
+}
+
+// ---------- Busca de produto (usada na página de detalhe /produto/:id) ----------
+
+export function findProductById(id) {
+  const fromBestSellers = bestSellers.find((product) => product.id === id)
+  if (fromBestSellers) return { ...fromBestSellers, categorySlug: null, categoryLabel: null }
+
+  for (const category of Object.values(categories)) {
+    const product = category.products.find((item) => item.id === id)
+    if (product) return { ...product, categorySlug: category.slug, categoryLabel: category.label }
+  }
+
+  return null
 }
