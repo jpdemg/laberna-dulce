@@ -9,7 +9,9 @@ import CategoryPage from './pages/CategoryPage'
 import InstitutionalPage from './pages/InstitutionalPage'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
-import Account from './pages/Account'
+import AccountLayout from './components/AccountLayout'
+import AccountProfile from './pages/AccountProfile'
+import AccountOrders from './pages/AccountOrders'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import OrderStatus from './pages/OrderStatus'
@@ -39,10 +41,13 @@ function App() {
                 path="conta"
                 element={
                   <ProtectedRoute>
-                    <Account />
+                    <AccountLayout />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<AccountProfile />} />
+                <Route path="pedidos" element={<AccountOrders />} />
+              </Route>
               <Route path="carrinho" element={<Cart />} />
               <Route
                 path="checkout"

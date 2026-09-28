@@ -769,6 +769,26 @@
   gap: 1.5rem;
 }
 
+.account-tabs {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.account-tabs a {
+  padding-bottom: 0.85rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.account-tabs a.active {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-accent);
+}
+
 .account-page__email {
   color: var(--color-muted);
 }
