@@ -20,7 +20,7 @@ function daisy(cx, cy, size, color) {
 
 function buildSvg(shapeKey, label) {
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
       <rect width="1600" height="1000" fill="${BG}" />
       ${daisy(1360, 160, 55, LINE)}
       <g transform="translate(500 200) scale(2)">
