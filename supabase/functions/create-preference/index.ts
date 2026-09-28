@@ -120,7 +120,10 @@ Deno.serve(async (req) => {
 
     await admin.from('orders').update({ mp_preference_id: preference.id }).eq('id', order.id)
 
-    return json({ init_point: preference.init_point, order_id: order.id })
+    const useSandbox = Deno.env.get('MP_USE_SANDBOX') === 'true'
+    const checkoutUrl = useSandbox ? preference.sandbox_init_point : preference.init_point
+
+    return json({ init_point: checkoutUrl, order_id: order.id })
   } catch (error) {
     return json({ error: (error as Error).message }, 500)
   }
