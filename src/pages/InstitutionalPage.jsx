@@ -43,6 +43,7 @@ export default function InstitutionalPage({ slug }) {
 
   return (
     <div className="institutional-page">
+      <h1 className="sr-only">{page.label}</h1>
       <Placeholder label={page.hero.imageLabel} variant={0} className="institutional-hero" />
 
       {page.sections.map((section, index) => {
