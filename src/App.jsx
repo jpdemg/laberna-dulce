@@ -1,35 +1,31 @@
-import TopBar from './components/TopBar'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import FeatureBanners from './components/FeatureBanners'
-import Categories from './components/Categories'
-import NewIn from './components/NewIn'
-import Seasonal from './components/Seasonal'
-import BestSellers from './components/BestSellers'
-import About from './components/About'
-import Differentials from './components/Differentials'
-import InstagramFeed from './components/InstagramFeed'
-import Footer from './components/Footer'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout'
+import ScrollToTop from './components/ScrollToTop'
+import Home from './pages/Home'
+import CategoryPage from './pages/CategoryPage'
+import InstitutionalPage from './pages/InstitutionalPage'
+import NotFound from './pages/NotFound'
 import './App.css'
 
 function App() {
   return (
-    <div id="topo">
-      <TopBar />
-      <Header />
-      <main>
-        <Hero />
-        <FeatureBanners />
-        <Categories />
-        <NewIn />
-        <Seasonal />
-        <BestSellers />
-        <About />
-        <Differentials />
-        <InstagramFeed />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter basename="/laberna-dulce">
+      <ScrollToTop />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="bolos" element={<CategoryPage slug="bolos" />} />
+          <Route path="sobremesas" element={<CategoryPage slug="sobremesas" />} />
+          <Route path="docinhos" element={<CategoryPage slug="docinhos" />} />
+          <Route path="linha-to-go" element={<CategoryPage slug="linha-to-go" />} />
+          <Route path="atelie" element={<InstitutionalPage slug="atelie" />} />
+          <Route path="festas-e-eventos" element={<InstitutionalPage slug="festas-e-eventos" />} />
+          <Route path="personalizados" element={<InstitutionalPage slug="personalizados" />} />
+          <Route path="presentes" element={<InstitutionalPage slug="presentes" />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

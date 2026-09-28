@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { brand, mainNav } from '../data/site'
 
 export default function Header() {
@@ -19,20 +20,20 @@ export default function Header() {
           <span className="sr-only">Abrir menu</span>
         </button>
 
-        <a href="#topo" className="site-header__logo">
+        <Link to="/" className="site-header__logo">
           {brand.name}
-        </a>
+        </Link>
 
         <nav id="main-nav" className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Principal">
           <ul>
             {mainNav.map((item) => (
               <li key={item.label} className={item.children ? 'has-submenu' : ''}>
-                <a href={item.href}>{item.label}</a>
+                <NavLink to={item.href}>{item.label}</NavLink>
                 {item.children && (
                   <ul className="submenu">
                     {item.children.map((child) => (
                       <li key={child.label}>
-                        <a href={child.href}>{child.label}</a>
+                        <NavLink to={child.href}>{child.label}</NavLink>
                       </li>
                     ))}
                   </ul>
@@ -43,14 +44,25 @@ export default function Header() {
         </nav>
 
         <div className="site-header__actions">
-          <button aria-label="Entrar na conta">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 6v2h18v-2c0-3.5-4-6-9-6Z" /></svg>
+          <button aria-label="Entrar na conta" className="site-header__login">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+            </svg>
+            <span>Login</span>
           </button>
           <button aria-label="Buscar produtos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="M20 20 15.3 15.3" />
+            </svg>
           </button>
-          <button aria-label="Lista de desejos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.35-9.5-8.5C.6 9 2 5 5.6 5c2 0 3.4 1.1 4.4 2.6C11 6.1 12.4 5 14.4 5 18 5 19.4 9 21.5 12.5 19 16.65 12 21 12 21Z" /></svg>
+          <button aria-label="Carrinho" className="site-header__cart">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 8h14l-1.3 11H6.3Z" />
+              <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
+            </svg>
+            <span className="site-header__cart-count">0</span>
           </button>
         </div>
       </div>

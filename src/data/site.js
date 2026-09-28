@@ -9,59 +9,53 @@ export const brand = {
 export const announcement = 'Frete grátis para pedidos acima de [VALOR] em São Paulo'
 
 export const mainNav = [
-  { label: 'Ateliê', href: '#historia' },
   {
     label: 'Nossos produtos',
-    href: '#produtos',
+    href: '/bolos',
     children: [
-      { label: 'Bolos', href: '#produtos' },
-      { label: 'Sobremesas', href: '#produtos' },
-      { label: 'Docinhos', href: '#produtos' },
-      { label: 'Linha Petite', href: '#produtos' },
-      { label: 'Linha To Go', href: '#produtos' },
+      { label: 'Bolos', href: '/bolos' },
+      { label: 'Sobremesas', href: '/sobremesas' },
+      { label: 'Docinhos', href: '/docinhos' },
+      { label: 'Linha To Go', href: '/linha-to-go' },
     ],
   },
-  { label: 'Festas & Eventos', href: '#diferenciais' },
-  { label: 'Personalizados', href: '#diferenciais' },
-  { label: 'Presenteáveis', href: '#diferenciais' },
-  { label: 'Linha To Go', href: '#produtos' },
+  { label: 'Ateliê', href: '/atelie' },
+  { label: 'Bolos', href: '/bolos' },
+  { label: 'Festas & Eventos', href: '/festas-e-eventos' },
+  { label: 'Personalizados', href: '/personalizados' },
+  { label: 'Presenteáveis', href: '/presentes' },
+  { label: 'Linha To Go', href: '/linha-to-go' },
 ]
+
+// ---------- Home ----------
 
 export const hero = {
-  eyebrow: 'bem-vindos à laberna dulce',
-  title: '[Produto assinatura]: nosso clássico mais desejado.',
-  cta: 'Conheça nosso Best Seller',
+  slides: [
+    {
+      eyebrow: 'bem-vindos à laberna dulce',
+      title: '[Produto assinatura]: nosso clássico mais desejado.',
+      cta: 'Conheça nosso Best Seller',
+      href: '#best-sellers',
+    },
+    {
+      eyebrow: 'novidade do ateliê',
+      title: '[Nome do lançamento] chegou para adoçar sua semana.',
+      cta: 'Ver lançamento',
+      href: '/bolos',
+    },
+  ],
 }
 
-export const featureBanners = [
-  {
-    eyebrow: 'Celebre seu dia!',
-    title: 'Bolos que encantam em cada detalhe',
-    cta: 'Catálogo de bolos',
-    href: '#produtos',
-    align: 'left',
-  },
-  {
-    eyebrow: 'Adoce o paladar',
-    title: 'Cuidado desde a escolha dos ingredientes até o acabamento',
-    cta: 'Nossas sobremesas',
-    href: '#produtos',
-    align: 'right',
-  },
-  {
-    eyebrow: '[mês / época do ano]',
-    title: '[Nome da coleção sazonal]',
-    cta: 'Hora de torcer e celebrar!',
-    href: '#produtos',
-    align: 'left',
-  },
-]
-
 export const catalogIntro = {
-  title: 'Produtos feitos para marcar cada momento com doçura.',
+  title: 'Produtos feitos para marcar cada momento com ',
+  emphasis: 'doçura.',
   subtitle: 'intensos no sabor, delicados no acabamento.',
   cta: 'Conheça nosso catálogo',
-  categories: ['Bolos', 'Docinhos', 'Sobremesas'],
+  categories: [
+    { label: 'Bolos', href: '/bolos' },
+    { label: 'Docinhos', href: '/docinhos' },
+    { label: 'Sobremesas', href: '/sobremesas' },
+  ],
 }
 
 export const newIn = {
@@ -75,13 +69,35 @@ export const seasonal = {
   title: '[Coleção sazonal] Laberna Dulce',
   subtitle: 'a época mais gostosa do ano!',
   cta: 'Catálogo da coleção',
+  href: '/bolos',
 }
 
+export const homeBanners = [
+  {
+    tone: 'dark',
+    reverse: false,
+    title: 'Bolos que encantam em cada detalhe',
+    body: 'Celebre seu dia com um bolo feito à mão, do jeitinho Laberna Dulce.',
+    cta: 'Catálogo de bolos',
+    href: '/bolos',
+    imageLabel: 'Celebre seu dia',
+  },
+  {
+    tone: 'light',
+    reverse: true,
+    title: 'Cuidado desde a escolha dos ingredientes até o acabamento',
+    body: 'Adoce o paladar com nossas sobremesas artesanais.',
+    cta: 'Nossas sobremesas',
+    href: '/sobremesas',
+    imageLabel: 'Adoce o paladar',
+  },
+]
+
 export const bestSellers = [
-  { name: '[Produto 1]', price: '[R$ 0,00]' },
+  { name: '[Produto 1]', price: '[R$ 0,00]', tag: 'Best seller' },
   { name: '[Produto 2]', price: '[R$ 0,00]' },
   { name: '[Produto 3]', price: '[R$ 0,00]' },
-  { name: '[Produto 4]', price: '[R$ 0,00]' },
+  { name: '[Produto 4]', price: '[R$ 0,00]', tag: 'Homemade' },
   { name: '[Produto 5]', price: '[R$ 0,00]' },
   { name: '[Produto 6]', price: '[R$ 0,00]' },
 ]
@@ -105,7 +121,7 @@ export const differentials = [
   },
   {
     title: 'agende seu pedido',
-    text: `Entregas em até 48h em ${'São Paulo'}.`,
+    text: `Entregas em até 48h em São Paulo.`,
   },
   {
     title: 'vontade de um docinho?',
@@ -116,7 +132,141 @@ export const differentials = [
 export const instagram = {
   handle: '@[laberna.dulce]',
   cta: 'Follow us',
+  href: '[LINK_INSTAGRAM]',
 }
+
+// ---------- Categorias (páginas /bolos, /sobremesas, /docinhos, /linha-to-go) ----------
+
+const productSet = (prefix) =>
+  Array.from({ length: 8 }).map((_, index) => ({
+    name: `[${prefix} ${index + 1}]`,
+    price: '[R$ 0,00]',
+    tag: index === 1 ? 'Homemade' : index === 4 ? 'Geléia ou fruta' : '',
+  }))
+
+export const categories = {
+  bolos: {
+    slug: 'bolos',
+    label: 'Bolos',
+    banner: {
+      eyebrow: 'feitos para celebrar o agora',
+      body: 'Na Laberna Dulce, acreditamos que o sabor tem o poder de marcar um dia, transformar uma ocasião e aquecer lembranças. [Complementar com texto institucional sobre a linha de bolos.]',
+    },
+    products: productSet('Bolo'),
+  },
+  sobremesas: {
+    slug: 'sobremesas',
+    label: 'Sobremesas',
+    banner: {
+      eyebrow: 'cuidado do começo ao fim',
+      body: 'Cuidado desde a escolha dos ingredientes até o acabamento. [Complementar com texto institucional sobre a linha de sobremesas.]',
+    },
+    products: productSet('Sobremesa'),
+  },
+  docinhos: {
+    slug: 'docinhos',
+    label: 'Docinhos',
+    banner: {
+      eyebrow: 'no tamanho certo pra adoçar',
+      body: 'Docinhos artesanais para qualquer ocasião. [Complementar com texto institucional sobre a linha de docinhos.]',
+    },
+    products: productSet('Docinho'),
+  },
+  'linha-to-go': {
+    slug: 'linha-to-go',
+    label: 'Linha To Go',
+    banner: {
+      eyebrow: 'praticidade com o sabor de sempre',
+      body: 'Para levar a doçura da Laberna Dulce para onde você estiver. [Complementar com texto institucional sobre a linha to go.]',
+    },
+    products: productSet('To Go'),
+  },
+}
+
+// ---------- Páginas institucionais ----------
+
+export const institutionalPages = {
+  atelie: {
+    slug: 'atelie',
+    label: 'Ateliê',
+    hero: { imageLabel: 'foto do ateliê' },
+    sections: [
+      {
+        type: 'plain',
+        title: 'nossa história',
+        body: [
+          'A Laberna Dulce nasceu em [ANO] com o propósito de transformar ingredientes simples em momentos doces e inesquecíveis.',
+          'Hoje, o ateliê é conduzido por [Nome da sócia 1], à frente do atendimento, e [Nome da sócia 2], responsável pela confeitaria.',
+        ],
+        imageLabel: 'foto das sócias',
+      },
+      {
+        type: 'gallery',
+        count: 4,
+      },
+    ],
+  },
+  'festas-e-eventos': {
+    slug: 'festas-e-eventos',
+    label: 'Festas & Eventos',
+    hero: { imageLabel: 'foto da mesa de doces' },
+    sections: [
+      {
+        type: 'banner',
+        title: 'Mesa de doces',
+        body: 'A mesa de doces é um dos encantos da festa, um convite para celebrar, degustar e viver o momento com doçura. [Complementar com texto institucional sobre a mesa de doces.]',
+        cta: 'Faça o orçamento do seu evento',
+        href: '/personalizados',
+        imageLabel: 'foto da mesa de doces',
+      },
+      {
+        type: 'plain',
+        title: 'Celebrações são ',
+        emphasis: 'momentos únicos.',
+        body: [
+          'É um prazer para nós fazer parte de histórias tão especiais. Criamos cada pedido do jeitinho que você desejar, para tornar esse dia ainda mais inesquecível.',
+        ],
+        imageLabel: 'foto do evento',
+        reverse: true,
+      },
+      { type: 'gallery', count: 4 },
+    ],
+  },
+  personalizados: {
+    slug: 'personalizados',
+    label: 'Personalizados',
+    hero: { imageLabel: 'foto de produto personalizado' },
+    sections: [
+      {
+        type: 'banner',
+        title: 'Feito especialmente para você',
+        body: 'Cada comemoração é única, e por isso criamos projetos sob medida para o seu momento. [Complementar com texto institucional sobre personalização.]',
+        cta: 'Solicite seu projeto',
+        href: '[WHATSAPP]',
+        imageLabel: 'foto de personalização',
+      },
+      { type: 'gallery', count: 4 },
+    ],
+  },
+  presentes: {
+    slug: 'presentes',
+    label: 'Presenteáveis',
+    hero: { imageLabel: 'foto de presente' },
+    sections: [
+      {
+        type: 'banner',
+        title: 'Presenteie com doçura',
+        body: 'Presentear com um doce Laberna Dulce é presentear com afeto. [Complementar com texto institucional sobre a linha de presentes.]',
+        cta: 'Ver opções de presentes',
+        href: '/docinhos',
+        imageLabel: 'foto de presente',
+      },
+      { type: 'gallery', count: 4 },
+    ],
+  },
+}
+
+// ---------- Footer ----------
 
 export const footer = {
   hours: [

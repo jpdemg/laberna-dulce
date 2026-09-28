@@ -1,14 +1,15 @@
 :root {
-  --color-bg: #fef9ec;
-  --color-bg-alt: #ece0d1;
+  --color-bg: #fdf9ec;
+  --color-bg-alt: #e8dfd0;
   --color-ink: #11110f;
-  --color-accent: #ae7c51;
+  --color-accent: #a07b54;
+  --color-accent-dark: #8a6743;
   --color-white: #ffffff;
-  --color-muted: #8f8f8f;
+  --color-muted: #767574;
   --color-line: rgba(17, 17, 15, 0.12);
 
   --font-body: 'Poppins', system-ui, sans-serif;
-  --font-heading: 'Poppins', system-ui, sans-serif;
+  --font-heading: 'Playfair Display', 'Poppins', system-ui, serif;
 
   --container: 1180px;
 
@@ -37,8 +38,7 @@ h2,
 h3 {
   font-family: var(--font-heading);
   font-weight: 500;
-  text-transform: lowercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   margin: 0;
 }
 
@@ -51,10 +51,19 @@ h1 {
 h2 {
   font-size: clamp(1.5rem, 2.5vw, 2.25rem);
   line-height: 1.2;
+  font-weight: 400;
 }
 
 h3 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+em,
+.accent-italic {
+  font-style: italic;
+  color: var(--color-accent-dark);
 }
 
 p {
@@ -105,10 +114,10 @@ svg {
 
 .btn {
   display: inline-block;
-  padding: 0.9em 2em;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  padding: 0.85em 1.9em;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
@@ -119,7 +128,7 @@ svg {
 }
 
 .btn--primary:hover {
-  background: var(--color-accent);
+  background: var(--color-accent-dark);
 }
 
 .btn--outline {
@@ -130,4 +139,60 @@ svg {
 .btn--outline:hover {
   background: var(--color-ink);
   color: var(--color-white);
+}
+
+.btn--add {
+  background: var(--color-accent);
+  color: var(--color-white);
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.btn--add:hover {
+  background: var(--color-accent-dark);
+}
+
+.btn--add svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.btn--light {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  border-radius: 999px;
+}
+
+.btn--light:hover {
+  background: var(--color-white);
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.2em;
+}
+
+.link-arrow svg {
+  width: 16px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: transform 0.2s ease;
+}
+
+.link-arrow:hover svg {
+  transform: translateX(4px);
 }

@@ -1,4 +1,4 @@
-export default function Placeholder({ label = 'foto do produto', variant = 0, className = '' }) {
+export default function Placeholder({ label = 'foto do produto', variant = 0, className = '', seal = false, tag = '' }) {
   const patterns = [
     <path key="cake" d="M20 78 L20 58 Q50 46 80 58 L80 78 Z" />,
     <circle key="macaron" cx="50" cy="50" r="26" />,
@@ -7,10 +7,16 @@ export default function Placeholder({ label = 'foto do produto', variant = 0, cl
 
   return (
     <div className={`placeholder-art ${className}`} role="img" aria-label={label}>
+      {tag && <span className="placeholder-art__tag">{tag}</span>}
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         {patterns[variant % patterns.length]}
       </svg>
-      <span>{label}</span>
+      {seal && (
+        <span className="placeholder-art__seal" aria-hidden="true">
+          LD
+        </span>
+      )}
+      <span className="placeholder-art__label">{label}</span>
     </div>
   )
 }
