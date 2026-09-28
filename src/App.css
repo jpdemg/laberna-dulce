@@ -166,13 +166,11 @@
   flex-shrink: 0;
 }
 
-.site-header__actions button {
+.site-header__action {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  justify-content: center;
 }
 
 .site-header__actions svg {
@@ -181,10 +179,6 @@
   fill: none;
   stroke: var(--color-ink);
   stroke-width: 1.6;
-}
-
-.site-header__login span {
-  display: none;
 }
 
 .site-header__cart {
@@ -206,10 +200,29 @@
   justify-content: center;
 }
 
-@media (min-width: 901px) {
-  .site-header__login span {
-    display: inline;
-  }
+.site-header__tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 0.35em 0.75em;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 10;
+}
+
+.site-header__action:hover .site-header__tooltip,
+.site-header__action:focus-visible .site-header__tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 /* Hero */
