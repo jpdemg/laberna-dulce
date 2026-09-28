@@ -34,7 +34,13 @@ export default function Login() {
 
         <label>
           E-mail
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            type="email"
+            required
+            placeholder="Ex.: maria@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </label>
 
         <label>
@@ -42,6 +48,7 @@ export default function Login() {
           <input
             type="password"
             required
+            placeholder="Sua senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

@@ -6,6 +6,8 @@ import { useProfile } from '../hooks/useProfile'
 import { supabase } from '../lib/supabaseClient'
 import { formatBRL } from '../lib/format'
 import { fetchAddressByCep } from '../lib/viacep'
+import PhoneInput from '../components/PhoneInput'
+import { isNotEmpty, isValidCep, isValidBrState, isValidPhoneNumber } from '../lib/validators'
 
 const emptyAddress = {
   street: '',
@@ -23,25 +25,32 @@ export default function Checkout() {
   const { profile, loading: profileLoading, saveProfile } = useProfile()
   const navigate = useNavigate()
   const [address, setAddress] = useState(emptyAddress)
-  const [phone, setPhone] = useState('')
+  const [phoneCountry, setPhoneCountry] = useState('BR')
+  const [phoneNumber, setPhoneNumber] = useState('')
   const [cepLoading, setCepLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
 
   useEffect(() => {
     if (profile?.address) setAddress((current) => ({ ...current, ...profile.address }))
-    if (profile?.phone) setPhone(profile.phone)
+    if (profile?.phone) setPhoneNumber(profile.phone)
+    if (profile?.phone_country) setPhoneCountry(profile.phone_country)
   }, [profile])
 
   const updateField = (field) => (event) =>
     setAddress((current) => ({ ...current, [field]: event.target.value }))
 
-  const handleCepBlur = async () => {
-    const found = await fetchAddressByCep(address.zip)
+  const applyCepResult = (found) => {
     if (!found) return
-    setCepLoading(true)
     setAddress((current) => ({ ...current, ...found }))
+  }
+
+  const handleCepBlur = async () => {
+    setCepLoading(true)
+    const found = await fetchAddressByCep(address.zip)
     setCepLoading(false)
+    applyCepResult(found)
   }
 
   const handleCepChange = (event) => {
@@ -51,22 +60,39 @@ export default function Checkout() {
       setCepLoading(true)
       fetchAddressByCep(digits).then((found) => {
         setCepLoading(false)
-        if (found) setAddress((current) => ({ ...current, ...found }))
+        applyCepResult(found)
       })
     }
+  }
+
+  const validate = () => {
+    const errors = {}
+    if (!isValidCep(address.zip)) errors.zip = 'Digite um CEP válido, com 8 dígitos.'
+    if (!isNotEmpty(address.street)) errors.street = 'Informe o nome da rua.'
+    if (!isNotEmpty(address.number)) errors.number = 'Informe o número.'
+    if (!isNotEmpty(address.neighborhood)) errors.neighborhood = 'Informe o bairro.'
+    if (!isNotEmpty(address.city)) errors.city = 'Informe a cidade.'
+    if (!isValidBrState(address.state)) errors.state = 'Use a sigla do estado, com 2 letras (ex.: SP).'
+    if (!isValidPhoneNumber(phoneNumber, phoneCountry)) {
+      errors.phone = 'Digite um telefone válido para o país selecionado.'
+    }
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
   }
 
   const handlePay = async (event) => {
     event.preventDefault()
     setError('')
+    if (!validate()) return
+
     setLoading(true)
 
-    await saveProfile({ phone, address })
+    await saveProfile({ phone: phoneNumber, phone_country: phoneCountry, address })
 
     const { data, error: fnError } = await supabase.functions.invoke('create-preference', {
       body: {
         items: items.map((item) => ({ id: item.id, quantity: item.quantity })),
-        address: { ...address, phone },
+        address: { ...address, phone: phoneNumber, phone_country: phoneCountry },
       },
     })
 
@@ -111,45 +137,86 @@ export default function Checkout() {
             <input
               required
               inputMode="numeric"
-              placeholder="00000-000"
+              placeholder="Ex.: 04530-001"
               value={address.zip}
               onChange={handleCepChange}
               onBlur={handleCepBlur}
             />
+            {fieldErrors.zip && <span className="field-error">{fieldErrors.zip}</span>}
           </label>
 
           <label>
             Rua
-            <input required value={address.street} onChange={updateField('street')} />
+            <input
+              required
+              placeholder="Ex.: Rua Cel. Artur de Paula Ferreira"
+              value={address.street}
+              onChange={updateField('street')}
+            />
+            {fieldErrors.street && <span className="field-error">{fieldErrors.street}</span>}
           </label>
           <div className="checkout-form__row">
             <label>
               Número
-              <input required value={address.number} onChange={updateField('number')} />
+              <input
+                required
+                placeholder="Ex.: 135"
+                value={address.number}
+                onChange={updateField('number')}
+              />
+              {fieldErrors.number && <span className="field-error">{fieldErrors.number}</span>}
             </label>
             <label>
               Complemento
-              <input value={address.complement} onChange={updateField('complement')} />
+              <input
+                placeholder="Ex.: Apto 45 (opcional)"
+                value={address.complement}
+                onChange={updateField('complement')}
+              />
             </label>
           </div>
           <label>
             Bairro
-            <input required value={address.neighborhood} onChange={updateField('neighborhood')} />
+            <input
+              required
+              placeholder="Ex.: Vila Nova Conceição"
+              value={address.neighborhood}
+              onChange={updateField('neighborhood')}
+            />
+            {fieldErrors.neighborhood && <span className="field-error">{fieldErrors.neighborhood}</span>}
           </label>
           <div className="checkout-form__row">
             <label>
               Cidade
-              <input required value={address.city} onChange={updateField('city')} />
+              <input
+                required
+                placeholder="Ex.: São Paulo"
+                value={address.city}
+                onChange={updateField('city')}
+              />
+              {fieldErrors.city && <span className="field-error">{fieldErrors.city}</span>}
             </label>
             <label>
               Estado
-              <input required value={address.state} onChange={updateField('state')} maxLength={2} />
+              <input
+                required
+                placeholder="Ex.: SP"
+                value={address.state}
+                onChange={updateField('state')}
+                maxLength={2}
+              />
+              {fieldErrors.state && <span className="field-error">{fieldErrors.state}</span>}
             </label>
           </div>
-          <label>
-            Telefone
-            <input required value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </label>
+
+          <PhoneInput
+            country={phoneCountry}
+            number={phoneNumber}
+            onCountryChange={setPhoneCountry}
+            onNumberChange={setPhoneNumber}
+            error={fieldErrors.phone}
+          />
+
           <p className="checkout-form__hint">
             Salvamos esse endereço na sua conta para a próxima compra.
           </p>

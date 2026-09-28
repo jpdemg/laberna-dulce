@@ -916,6 +916,36 @@
   color: var(--color-muted);
 }
 
+.field-error {
+  color: #b3261e;
+  font-size: 0.75rem;
+}
+
+.phone-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.phone-input__country {
+  font: inherit;
+  padding: 0.7em 0.5em;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  max-width: 40%;
+}
+
+.phone-input__number {
+  flex: 1;
+  font: inherit;
+  padding: 0.7em 0.9em;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
 .account-page__profile .checkout-form fieldset {
   background: var(--color-white);
 }
