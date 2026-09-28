@@ -94,12 +94,12 @@ export const homeBanners = [
 ]
 
 export const bestSellers = [
-  { name: '[Produto 1]', price: '[R$ 0,00]', tag: 'Best seller' },
-  { name: '[Produto 2]', price: '[R$ 0,00]' },
-  { name: '[Produto 3]', price: '[R$ 0,00]' },
-  { name: '[Produto 4]', price: '[R$ 0,00]', tag: 'Homemade' },
-  { name: '[Produto 5]', price: '[R$ 0,00]' },
-  { name: '[Produto 6]', price: '[R$ 0,00]' },
+  { id: 'best-1', name: '[Produto 1]', price: 65, tag: 'Best seller' },
+  { id: 'best-2', name: '[Produto 2]', price: 72 },
+  { id: 'best-3', name: '[Produto 3]', price: 58 },
+  { id: 'best-4', name: '[Produto 4]', price: 80, tag: 'Homemade' },
+  { id: 'best-5', name: '[Produto 5]', price: 45 },
+  { id: 'best-6', name: '[Produto 6]', price: 90 },
 ]
 
 export const about = {
@@ -137,10 +137,11 @@ export const instagram = {
 
 // ---------- Categorias (páginas /bolos, /sobremesas, /docinhos, /linha-to-go) ----------
 
-const productSet = (prefix) =>
+const productSet = (prefix, slugPrefix) =>
   Array.from({ length: 8 }).map((_, index) => ({
+    id: `${slugPrefix}-${index + 1}`,
     name: `[${prefix} ${index + 1}]`,
-    price: '[R$ 0,00]',
+    price: 40 + index * 7,
     tag: index === 1 ? 'Homemade' : index === 4 ? 'Geléia ou fruta' : '',
   }))
 
@@ -152,7 +153,7 @@ export const categories = {
       eyebrow: 'feitos para celebrar o agora',
       body: 'Na Laberna Dulce, acreditamos que o sabor tem o poder de marcar um dia, transformar uma ocasião e aquecer lembranças. [Complementar com texto institucional sobre a linha de bolos.]',
     },
-    products: productSet('Bolo'),
+    products: productSet('Bolo', 'bolo'),
   },
   sobremesas: {
     slug: 'sobremesas',
@@ -161,7 +162,7 @@ export const categories = {
       eyebrow: 'cuidado do começo ao fim',
       body: 'Cuidado desde a escolha dos ingredientes até o acabamento. [Complementar com texto institucional sobre a linha de sobremesas.]',
     },
-    products: productSet('Sobremesa'),
+    products: productSet('Sobremesa', 'sobremesa'),
   },
   docinhos: {
     slug: 'docinhos',
@@ -170,7 +171,7 @@ export const categories = {
       eyebrow: 'no tamanho certo pra adoçar',
       body: 'Docinhos artesanais para qualquer ocasião. [Complementar com texto institucional sobre a linha de docinhos.]',
     },
-    products: productSet('Docinho'),
+    products: productSet('Docinho', 'docinho'),
   },
   'linha-to-go': {
     slug: 'linha-to-go',
@@ -179,7 +180,7 @@ export const categories = {
       eyebrow: 'praticidade com o sabor de sempre',
       body: 'Para levar a doçura da Laberna Dulce para onde você estiver. [Complementar com texto institucional sobre a linha to go.]',
     },
-    products: productSet('To Go'),
+    products: productSet('To Go', 'to-go'),
   },
 }
 

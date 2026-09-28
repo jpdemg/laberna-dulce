@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { brand, mainNav } from '../data/site'
+import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { user } = useAuth()
+  const { count } = useCart()
 
   return (
     <header className="site-header">
@@ -44,26 +48,26 @@ export default function Header() {
         </nav>
 
         <div className="site-header__actions">
-          <button aria-label="Entrar na conta" className="site-header__login">
+          <Link to={user ? '/conta' : '/login'} aria-label="Entrar na conta" className="site-header__login">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="3.5" />
               <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
             </svg>
-            <span>Login</span>
-          </button>
+            <span>{user ? 'Minha conta' : 'Login'}</span>
+          </Link>
           <button aria-label="Buscar produtos">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="10.5" cy="10.5" r="6.5" />
               <path d="M20 20 15.3 15.3" />
             </svg>
           </button>
-          <button aria-label="Carrinho" className="site-header__cart">
+          <Link to="/carrinho" aria-label="Carrinho" className="site-header__cart">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 8h14l-1.3 11H6.3Z" />
               <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
             </svg>
-            <span className="site-header__cart-count">0</span>
-          </button>
+            <span className="site-header__cart-count">{count}</span>
+          </Link>
         </div>
       </div>
     </header>
