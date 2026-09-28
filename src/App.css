@@ -95,6 +95,8 @@
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .site-header__burger {
@@ -112,12 +114,17 @@
 
 .main-nav ul {
   display: flex;
-  gap: 1.75rem;
+  gap: 1.3rem;
+  flex-wrap: nowrap;
+}
+
+.main-nav li {
+  white-space: nowrap;
 }
 
 .main-nav a {
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
@@ -156,6 +163,7 @@
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  flex-shrink: 0;
 }
 
 .site-header__actions button {
