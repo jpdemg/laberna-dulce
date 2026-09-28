@@ -14,8 +14,10 @@ export default function AccountOrders() {
   const { user } = useAuth()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [cancellingId, setCancellingId] = useState(null)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
+  const loadOrders = () => {
     if (!user) return
     supabase
       .from('orders')
@@ -25,12 +27,39 @@ export default function AccountOrders() {
         setOrders(data ?? [])
         setLoading(false)
       })
-  }, [user])
+  }
+
+  useEffect(loadOrders, [user])
+
+  const handleCancel = async (order) => {
+    const message =
+      order.status === 'paid'
+        ? 'Cancelar este pedido vai reembolsar o pagamento. Deseja continuar?'
+        : 'Tem certeza que deseja cancelar este pedido?'
+    if (!window.confirm(message)) return
+
+    setError('')
+    setCancellingId(order.id)
+    const { data, error: fnError } = await supabase.functions.invoke('cancel-order', {
+      body: { orderId: order.id },
+    })
+    setCancellingId(null)
+
+    if (fnError || data?.error) {
+      setError('Não foi possível cancelar o pedido. Tente novamente ou fale com a gente.')
+      return
+    }
+
+    setOrders((current) =>
+      current.map((item) => (item.id === order.id ? { ...item, status: 'cancelled' } : item)),
+    )
+  }
 
   return (
     <section className="account-page__orders">
       {loading && <p>Carregando pedidos...</p>}
       {!loading && orders.length === 0 && <p>Você ainda não fez nenhum pedido.</p>}
+      {error && <p className="auth-card__error">{error}</p>}
       {!loading && orders.length > 0 && (
         <ul>
           {orders.map((order) => (
@@ -44,11 +73,23 @@ export default function AccountOrders() {
                   {statusLabels[order.status] ?? order.status}
                 </span>
               </div>
-              {order.status === 'pending' && order.checkout_url && (
-                <a className="btn btn--outline account-page__resume" href={order.checkout_url}>
-                  Continuar pagamento
-                </a>
-              )}
+              <div className="account-page__order-actions">
+                {order.status === 'pending' && order.checkout_url && (
+                  <a className="btn btn--outline account-page__resume" href={order.checkout_url}>
+                    Continuar pagamento
+                  </a>
+                )}
+                {(order.status === 'pending' || order.status === 'paid') && (
+                  <button
+                    type="button"
+                    className="btn btn--outline account-page__cancel"
+                    disabled={cancellingId === order.id}
+                    onClick={() => handleCancel(order)}
+                  >
+                    {cancellingId === order.id ? 'Cancelando...' : 'Cancelar pedido'}
+                  </button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

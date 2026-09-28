@@ -969,10 +969,26 @@
   gap: 1rem;
 }
 
-.account-page__resume {
+.account-page__order-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.account-page__resume,
+.account-page__cancel {
   align-self: flex-start;
   padding: 0.5em 1.2em;
   font-size: 0.75rem;
+}
+
+.account-page__cancel {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
+.account-page__cancel:hover {
+  background: #b3261e;
+  color: var(--color-white);
 }
 
 .order-status {
