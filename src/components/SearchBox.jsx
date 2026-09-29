@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { searchProducts } from '../data/site'
-import Placeholder from './Placeholder'
+import { useAllActiveProducts } from '../hooks/useProducts'
+import ProductMedia from './ProductMedia'
 
 export default function SearchBox() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const containerRef = useRef(null)
   const inputRef = useRef(null)
+  const { products } = useAllActiveProducts()
 
-  const results = searchProducts(query)
+  const q = query.trim().toLowerCase()
+  const results = q ? products.filter((product) => product.name.toLowerCase().includes(q)).slice(0, 8) : []
 
   useEffect(() => {
     if (open) inputRef.current?.focus()
@@ -76,8 +78,8 @@ export default function SearchBox() {
                 style={{ '--result-delay': `${index * 0.04}s` }}
               >
                 <Link to={`/produto/${product.id}`} onClick={handleClose}>
-                  <Placeholder
-                    label={product.name}
+                  <ProductMedia
+                    product={product}
                     variant={index}
                     reveal={false}
                     className="search-box__thumb"

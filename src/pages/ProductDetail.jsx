@@ -1,29 +1,39 @@
 import { useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
-import Placeholder from '../components/Placeholder'
+import ProductMedia from '../components/ProductMedia'
 import { useCart } from '../context/CartContext'
-import { findProductById } from '../data/site'
+import { useProduct } from '../hooks/useProducts'
+import { categories } from '../data/site'
 import { formatBRL } from '../lib/format'
+
+const FALLBACK_GALLERY = [0, 1, 2]
 
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { addItem } = useCart()
-  const product = findProductById(id)
+  const { product, loading } = useProduct(id)
 
   const [activePhoto, setActivePhoto] = useState(0)
-  const [sizeLabel, setSizeLabel] = useState(product?.sizes?.[1]?.label ?? product?.sizes?.[0]?.label)
+  const [sizeLabel, setSizeLabel] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [notes, setNotes] = useState('')
   const [added, setAdded] = useState(false)
+
+  if (loading) {
+    return <div className="product-detail">Carregando...</div>
+  }
 
   if (!product) {
     return <Navigate to="/" replace />
   }
 
-  const selectedSize = product.sizes.find((size) => size.label === sizeLabel) ?? product.sizes[0]
+  const currentSizeLabel = sizeLabel ?? product.sizes[1]?.label ?? product.sizes[0].label
+  const selectedSize = product.sizes.find((size) => size.label === currentSizeLabel) ?? product.sizes[0]
   const unitPrice = product.price * selectedSize.multiplier
+  const categoryLabel = categories[product.category]?.label ?? null
+  const gallery = product.images?.length > 0 ? product.images.map((_, index) => index) : FALLBACK_GALLERY
 
   const buildCartItem = () => ({
     ...product,
@@ -49,15 +59,15 @@ export default function ProductDetail() {
 
       <div className="product-detail__layout">
         <div className="product-detail__gallery">
-          <Placeholder
-            label={product.name}
+          <ProductMedia
+            product={product}
             variant={activePhoto}
             seal
             className="product-detail__main-photo"
             reveal={false}
           />
           <div className="product-detail__thumbs">
-            {product.gallery.map((variant, index) => (
+            {gallery.map((variant, index) => (
               <button
                 key={variant}
                 type="button"
@@ -65,14 +75,14 @@ export default function ProductDetail() {
                 onClick={() => setActivePhoto(index)}
                 aria-label={`Ver foto ${index + 1}`}
               >
-                <Placeholder label={`${product.name} foto ${index + 1}`} variant={variant} reveal={false} />
+                <ProductMedia product={product} variant={variant} reveal={false} />
               </button>
             ))}
           </div>
         </div>
 
         <div className="product-detail__info">
-          {product.categoryLabel && <p className="eyebrow">{product.categoryLabel}</p>}
+          {categoryLabel && <p className="eyebrow">{categoryLabel}</p>}
           <h1>{product.name}</h1>
           <p className="product-detail__price">{formatBRL(unitPrice)}</p>
 
@@ -83,7 +93,7 @@ export default function ProductDetail() {
                 <button
                   key={size.label}
                   type="button"
-                  className={`size-selector__option ${size.label === sizeLabel ? 'is-active' : ''}`}
+                  className={`size-selector__option ${size.label === currentSizeLabel ? 'is-active' : ''}`}
                   onClick={() => setSizeLabel(size.label)}
                 >
                   {size.label}

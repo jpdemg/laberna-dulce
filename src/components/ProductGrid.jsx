@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Placeholder from './Placeholder'
+import ProductMedia from './ProductMedia'
 import { useCart } from '../context/CartContext'
 import { formatBRL } from '../lib/format'
 
@@ -21,7 +21,7 @@ export default function ProductGrid({ products }) {
       {products.map((product, index) => (
         <li key={product.id} className="product-card reveal" style={{ '--reveal-delay': `${(index % 4) * 0.12}s` }}>
           <Link to={`/produto/${product.id}`} className="product-card__link">
-            <Placeholder label={product.name} variant={index} seal tag={product.tag} reveal={false} />
+            <ProductMedia product={product} variant={index} seal tag={product.tag} reveal={false} />
             <h3>{product.name}</h3>
           </Link>
           <p className="product-card__price">{formatBRL(product.price)}</p>

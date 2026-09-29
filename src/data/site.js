@@ -1,4 +1,5 @@
 // Conteúdo central do site. Troque os valores entre colchetes [ ] pelos dados reais da Laberna Dulce.
+// O catálogo de produtos (nomes, preços, fotos) mora no Supabase agora — edite pelo painel /admin.
 
 export const brand = {
   name: 'Laberna Dulce',
@@ -93,29 +94,6 @@ export const homeBanners = [
   },
 ]
 
-export const defaultSizes = [
-  { label: 'P', multiplier: 0.8 },
-  { label: 'M', multiplier: 1 },
-  { label: 'G', multiplier: 1.3 },
-]
-
-const defaultDescription =
-  '[Descrição do produto: ingredientes, sabor e o que faz esse item especial. Substitua por um texto real.]'
-
-export const bestSellers = [
-  { id: 'best-1', name: '[Produto 1]', price: 65, tag: 'Best seller' },
-  { id: 'best-2', name: '[Produto 2]', price: 72 },
-  { id: 'best-3', name: '[Produto 3]', price: 58 },
-  { id: 'best-4', name: '[Produto 4]', price: 80, tag: 'Homemade' },
-  { id: 'best-5', name: '[Produto 5]', price: 45 },
-  { id: 'best-6', name: '[Produto 6]', price: 90 },
-].map((product) => ({
-  ...product,
-  description: defaultDescription,
-  sizes: defaultSizes,
-  gallery: [0, 1, 2],
-}))
-
 export const about = {
   title: 'nossa história',
   paragraphs: [
@@ -150,17 +128,7 @@ export const instagram = {
 }
 
 // ---------- Categorias (páginas /bolos, /sobremesas, /docinhos, /linha-to-go) ----------
-
-const productSet = (prefix, slugPrefix) =>
-  Array.from({ length: 8 }).map((_, index) => ({
-    id: `${slugPrefix}-${index + 1}`,
-    name: `[${prefix} ${index + 1}]`,
-    price: 40 + index * 7,
-    tag: index === 1 ? 'Homemade' : index === 4 ? 'Geléia ou fruta' : '',
-    description: defaultDescription,
-    sizes: defaultSizes,
-    gallery: [0, 1, 2],
-  }))
+// Os produtos de cada categoria vêm do Supabase (tabela `products`, coluna `category`).
 
 export const categories = {
   bolos: {
@@ -170,7 +138,6 @@ export const categories = {
       eyebrow: 'feitos para celebrar o agora',
       body: 'Na Laberna Dulce, acreditamos que o sabor tem o poder de marcar um dia, transformar uma ocasião e aquecer lembranças. [Complementar com texto institucional sobre a linha de bolos.]',
     },
-    products: productSet('Bolo', 'bolo'),
   },
   sobremesas: {
     slug: 'sobremesas',
@@ -179,7 +146,6 @@ export const categories = {
       eyebrow: 'cuidado do começo ao fim',
       body: 'Cuidado desde a escolha dos ingredientes até o acabamento. [Complementar com texto institucional sobre a linha de sobremesas.]',
     },
-    products: productSet('Sobremesa', 'sobremesa'),
   },
   docinhos: {
     slug: 'docinhos',
@@ -188,7 +154,6 @@ export const categories = {
       eyebrow: 'no tamanho certo pra adoçar',
       body: 'Docinhos artesanais para qualquer ocasião. [Complementar com texto institucional sobre a linha de docinhos.]',
     },
-    products: productSet('Docinho', 'docinho'),
   },
   'linha-to-go': {
     slug: 'linha-to-go',
@@ -197,7 +162,6 @@ export const categories = {
       eyebrow: 'praticidade com o sabor de sempre',
       body: 'Para levar a doçura da Laberna Dulce para onde você estiver. [Complementar com texto institucional sobre a linha to go.]',
     },
-    products: productSet('To Go', 'to-go'),
   },
 }
 
@@ -316,31 +280,4 @@ export const footer = {
     'Contato',
   ],
   legal: '© [ANO] por [Razão Social LTDA] | CNPJ [00.000.000/0001-00]',
-}
-
-// ---------- Busca de produto (usada na página de detalhe /produto/:id) ----------
-
-export function findProductById(id) {
-  const fromBestSellers = bestSellers.find((product) => product.id === id)
-  if (fromBestSellers) return { ...fromBestSellers, categorySlug: null, categoryLabel: null }
-
-  for (const category of Object.values(categories)) {
-    const product = category.products.find((item) => item.id === id)
-    if (product) return { ...product, categorySlug: category.slug, categoryLabel: category.label }
-  }
-
-  return null
-}
-
-// ---------- Busca ao vivo (ícone de pesquisa no header) ----------
-
-const searchIndex = [
-  ...bestSellers,
-  ...Object.values(categories).flatMap((category) => category.products),
-]
-
-export function searchProducts(query) {
-  const q = query.trim().toLowerCase()
-  if (!q) return []
-  return searchIndex.filter((product) => product.name.toLowerCase().includes(q)).slice(0, 8)
 }

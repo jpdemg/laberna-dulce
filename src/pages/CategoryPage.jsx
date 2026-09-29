@@ -1,12 +1,14 @@
 import { Navigate } from 'react-router-dom'
 import { categories } from '../data/site'
+import { useProductsByCategory } from '../hooks/useProducts'
 import Breadcrumb from '../components/Breadcrumb'
 import ProductGrid from '../components/ProductGrid'
-import Placeholder from '../components/Placeholder'
+import ProductMedia from '../components/ProductMedia'
 import Daisy from '../components/Daisy'
 
 export default function CategoryPage({ slug }) {
   const category = categories[slug]
+  const { products, loading } = useProductsByCategory(slug)
 
   if (!category) {
     return <Navigate to="/" replace />
@@ -17,7 +19,12 @@ export default function CategoryPage({ slug }) {
       <Breadcrumb label={category.label} />
 
       <article className="category-banner">
-        <Placeholder label={category.label} variant={0} className="category-banner__art" />
+        <ProductMedia
+          product={{ name: category.label, images: [] }}
+          variant={0}
+          className="category-banner__art"
+          reveal={false}
+        />
         <div className="category-banner__content reveal">
           <Daisy size={36} tone="light" />
           <p className="eyebrow">{category.banner.eyebrow}</p>
@@ -37,7 +44,11 @@ export default function CategoryPage({ slug }) {
         </label>
       </div>
 
-      <ProductGrid products={category.products} />
+      {loading && <p className="category-page__loading">Carregando produtos...</p>}
+      {!loading && products.length === 0 && (
+        <p className="category-page__loading">Ainda não temos produtos cadastrados nessa categoria.</p>
+      )}
+      {!loading && products.length > 0 && <ProductGrid products={products} />}
     </div>
   )
 }

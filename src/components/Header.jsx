@@ -3,12 +3,14 @@ import { Link, NavLink } from 'react-router-dom'
 import { brand, mainNav } from '../data/site'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useProfile } from '../hooks/useProfile'
 import SearchBox from './SearchBox'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { user } = useAuth()
   const { count } = useCart()
+  const { profile } = useProfile()
 
   return (
     <header className="site-header">
@@ -49,6 +51,14 @@ export default function Header() {
         </nav>
 
         <div className="site-header__actions">
+          {profile?.is_admin && (
+            <Link to="/admin" aria-label="Painel de administração" className="site-header__action">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />
+              </svg>
+              <span className="site-header__tooltip">Admin</span>
+            </Link>
+          )}
           <Link to={user ? '/conta' : '/login'} aria-label={user ? 'Minha conta' : 'Login'} className="site-header__action">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="3.5" />

@@ -8,6 +8,7 @@ import { formatBRL } from '../lib/format'
 import { fetchAddressByCep } from '../lib/viacep'
 import PhoneInput from '../components/PhoneInput'
 import { isNotEmpty, isValidCep, isValidBrState, isValidPhoneNumber } from '../lib/validators'
+import { getMinScheduleDate, generateTimeSlots } from '../lib/scheduling'
 
 const emptyAddress = {
   street: '',
@@ -31,6 +32,12 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
+  const [fulfillmentType, setFulfillmentType] = useState('pickup')
+  const [scheduledDate, setScheduledDate] = useState('')
+  const [scheduledTime, setScheduledTime] = useState('')
+
+  const minDate = getMinScheduleDate()
+  const timeSlots = generateTimeSlots(scheduledDate)
 
   useEffect(() => {
     if (profile?.address) setAddress((current) => ({ ...current, ...profile.address }))
@@ -76,8 +83,19 @@ export default function Checkout() {
     if (!isValidPhoneNumber(phoneNumber, phoneCountry)) {
       errors.phone = 'Digite um telefone válido para o país selecionado.'
     }
+    if (!scheduledDate) {
+      errors.scheduledDate = 'Escolha uma data.'
+    } else if (timeSlots.length === 0) {
+      errors.scheduledDate = 'Estamos fechados nesse dia, escolha outra data.'
+    }
+    if (!scheduledTime) errors.scheduledTime = 'Escolha um horário.'
     setFieldErrors(errors)
     return Object.keys(errors).length === 0
+  }
+
+  const handleDateChange = (event) => {
+    setScheduledDate(event.target.value)
+    setScheduledTime('')
   }
 
   const handlePay = async (event) => {
@@ -93,6 +111,7 @@ export default function Checkout() {
       body: {
         items: items.map((item) => ({ id: item.id, quantity: item.quantity, size: item.size, notes: item.notes })),
         address: { ...address, phone: phoneNumber, phone_country: phoneCountry },
+        fulfillment: { type: fulfillmentType, date: scheduledDate, time: scheduledTime },
       },
     })
 
@@ -124,6 +143,65 @@ export default function Checkout() {
       <h1 className="reveal">finalizar compra</h1>
 
       <form className="checkout-form" onSubmit={handlePay}>
+        <fieldset>
+          <legend>Retirada ou entrega</legend>
+          <div className="fulfillment-selector">
+            <button
+              type="button"
+              className={`fulfillment-selector__option ${fulfillmentType === 'pickup' ? 'is-active' : ''}`}
+              onClick={() => setFulfillmentType('pickup')}
+            >
+              Retirar no ateliê
+            </button>
+            <button
+              type="button"
+              className={`fulfillment-selector__option ${fulfillmentType === 'delivery' ? 'is-active' : ''}`}
+              onClick={() => setFulfillmentType('delivery')}
+            >
+              Receber em casa
+            </button>
+          </div>
+
+          <div className="checkout-form__row">
+            <label>
+              Data
+              <input
+                required
+                type="date"
+                min={minDate}
+                value={scheduledDate}
+                onChange={handleDateChange}
+              />
+              {fieldErrors.scheduledDate && <span className="field-error">{fieldErrors.scheduledDate}</span>}
+            </label>
+            <label>
+              Horário
+              <select
+                required
+                value={scheduledTime}
+                onChange={(e) => setScheduledTime(e.target.value)}
+                disabled={timeSlots.length === 0}
+              >
+                <option value="">
+                  {scheduledDate ? (timeSlots.length ? 'Escolha um horário' : 'Fechado nesse dia') : 'Escolha a data primeiro'}
+                </option>
+                {timeSlots.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
+              {fieldErrors.scheduledTime && <span className="field-error">{fieldErrors.scheduledTime}</span>}
+            </label>
+          </div>
+
+          <p className="checkout-form__hint">
+            {fulfillmentType === 'pickup'
+              ? 'Retirada no ateliê, dentro do nosso horário de funcionamento.'
+              : 'Entrega no endereço informado abaixo, dentro do nosso horário de funcionamento.'}
+          </p>
+        </fieldset>
+
         <fieldset>
           <legend>Endereço de entrega</legend>
           <label>

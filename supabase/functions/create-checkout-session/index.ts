@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       return json({ error: 'Não autenticado' }, 401)
     }
 
-    const { items, address } = await req.json()
+    const { items, address, fulfillment } = await req.json()
 
     if (!Array.isArray(items) || items.length === 0) {
       return json({ error: 'Carrinho vazio' }, 400)
@@ -83,7 +83,16 @@ Deno.serve(async (req) => {
 
     const { data: order, error: orderError } = await admin
       .from('orders')
-      .insert({ user_id: userData.user.id, status: 'pending', total, address })
+      .insert({
+        user_id: userData.user.id,
+        status: 'pending',
+        total,
+        address,
+        customer_email: userData.user.email,
+        fulfillment_type: fulfillment?.type === 'delivery' ? 'delivery' : 'pickup',
+        scheduled_date: fulfillment?.date || null,
+        scheduled_time: fulfillment?.time || null,
+      })
       .select()
       .single()
 

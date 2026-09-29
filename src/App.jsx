@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import ScrollToTop from './components/ScrollToTop'
 import ProtectedRoute from './components/ProtectedRoute'
+import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
@@ -13,6 +14,10 @@ import SignUp from './pages/SignUp'
 import AccountLayout from './components/AccountLayout'
 import AccountProfile from './pages/AccountProfile'
 import AccountOrders from './pages/AccountOrders'
+import AdminLayout from './components/AdminLayout'
+import AdminProducts from './pages/AdminProducts'
+import AdminProductForm from './pages/AdminProductForm'
+import AdminOrders from './pages/AdminOrders'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import OrderStatus from './pages/OrderStatus'
@@ -49,6 +54,19 @@ function App() {
               >
                 <Route index element={<AccountProfile />} />
                 <Route path="pedidos" element={<AccountOrders />} />
+              </Route>
+              <Route
+                path="admin"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminLayout />
+                  </ProtectedAdminRoute>
+                }
+              >
+                <Route index element={<AdminProducts />} />
+                <Route path="produtos/novo" element={<AdminProductForm />} />
+                <Route path="produtos/:id" element={<AdminProductForm />} />
+                <Route path="pedidos" element={<AdminOrders />} />
               </Route>
               <Route path="carrinho" element={<Cart />} />
               <Route

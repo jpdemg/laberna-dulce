@@ -10,6 +10,17 @@ const statusLabels = {
   cancelled: 'Cancelado',
 }
 
+const fulfillmentTypeLabels = {
+  pickup: 'Retirada no ateliê',
+  delivery: 'Entrega',
+}
+
+const fulfillmentStatusLabels = {
+  preparing: 'Em preparo',
+  ready: 'Pronto',
+  completed: 'Concluído',
+}
+
 export default function AccountOrders() {
   const { user } = useAuth()
   const [orders, setOrders] = useState([])
@@ -21,7 +32,7 @@ export default function AccountOrders() {
     if (!user) return
     supabase
       .from('orders')
-      .select('id, created_at, total, status, payment_method, checkout_url')
+      .select('id, created_at, total, status, payment_method, checkout_url, fulfillment_type, fulfillment_status, scheduled_date, scheduled_time')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         setOrders(data ?? [])
@@ -73,6 +84,15 @@ export default function AccountOrders() {
                   {statusLabels[order.status] ?? order.status}
                 </span>
               </div>
+              {order.fulfillment_type && (
+                <p className="admin-orders__schedule">
+                  {fulfillmentTypeLabels[order.fulfillment_type]}
+                  {order.scheduled_date &&
+                    ` em ${new Date(`${order.scheduled_date}T00:00:00`).toLocaleDateString('pt-BR')}`}
+                  {order.scheduled_time && ` às ${order.scheduled_time}`}
+                  {order.status === 'paid' && ` · ${fulfillmentStatusLabels[order.fulfillment_status]}`}
+                </p>
+              )}
               <div className="account-page__order-actions">
                 {order.status === 'pending' && order.checkout_url && (
                   <a className="btn btn--outline account-page__resume" href={order.checkout_url}>
