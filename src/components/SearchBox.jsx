@@ -53,39 +53,42 @@ export default function SearchBox() {
         <span className="site-header__tooltip">Pesquisar</span>
       </button>
 
-      {open && (
-        <div className="search-box__panel">
-          <input
-            ref={inputRef}
-            type="text"
-            className="search-box__input"
-            placeholder="Buscar produtos..."
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
+      <div className={`search-box__panel ${open ? 'is-open' : ''}`} aria-hidden={!open}>
+        <input
+          ref={inputRef}
+          type="text"
+          tabIndex={open ? 0 : -1}
+          className="search-box__input"
+          placeholder="Buscar produtos..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
 
-          {query.trim() && (
-            <ul className="search-box__results">
-              {results.length === 0 && (
-                <li className="search-box__empty">Nenhum produto encontrado.</li>
-              )}
-              {results.map((product, index) => (
-                <li key={product.id}>
-                  <Link to={`/produto/${product.id}`} onClick={handleClose}>
-                    <Placeholder
-                      label={product.name}
-                      variant={index}
-                      reveal={false}
-                      className="search-box__thumb"
-                    />
-                    <span>{product.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+        {query.trim() && (
+          <ul className="search-box__results">
+            {results.length === 0 && (
+              <li className="search-box__empty">Nenhum produto encontrado.</li>
+            )}
+            {results.map((product, index) => (
+              <li
+                key={product.id}
+                className="search-box__result"
+                style={{ '--result-delay': `${index * 0.04}s` }}
+              >
+                <Link to={`/produto/${product.id}`} onClick={handleClose}>
+                  <Placeholder
+                    label={product.name}
+                    variant={index}
+                    reveal={false}
+                    className="search-box__thumb"
+                  />
+                  <span>{product.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

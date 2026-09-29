@@ -277,6 +277,16 @@
   box-shadow: 0 16px 32px rgba(17, 17, 15, 0.12);
   padding: 0.75rem;
   z-index: 20;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.search-box__panel.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .search-box__input {
@@ -297,6 +307,22 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+
+@keyframes search-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-box__result {
+  animation: search-result-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--result-delay, 0s);
 }
 
 .search-box__results a {
