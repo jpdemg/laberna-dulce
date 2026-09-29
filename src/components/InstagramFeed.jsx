@@ -6,7 +6,7 @@ export default function InstagramFeed() {
   return (
     <section className="instagram" aria-labelledby="instagram-title">
       <div className="instagram__intro">
-        <Daisy size={44} />
+        <Daisy size={44} variant="logo" />
         <h2 id="instagram-title" className="reveal">{instagram.handle}</h2>
         <a className="link-arrow" href={instagram.href}>
           {instagram.cta}

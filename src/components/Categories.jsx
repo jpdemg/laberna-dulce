@@ -7,7 +7,7 @@ export default function Categories() {
   return (
     <section className="categories" aria-labelledby="categories-title">
       <header className="categories__intro">
-        <Daisy size={48} />
+        <Daisy size={48} variant="logo" />
         <h2 id="categories-title" className="reveal">
           {catalogIntro.title}
           <em>{catalogIntro.emphasis}</em>

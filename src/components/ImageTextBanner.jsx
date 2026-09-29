@@ -12,6 +12,7 @@ export default function ImageTextBanner({
   imageLabel,
   tone = 'dark',
   reverse = false,
+  daisyVariant = 'logo',
 }) {
   const isExternal = href && (href.startsWith('http') || href.startsWith('[') || href.startsWith('#'))
 
@@ -19,7 +20,7 @@ export default function ImageTextBanner({
     <article className={`banner banner--${tone} ${reverse ? 'banner--reverse' : ''}`}>
       <Placeholder label={imageLabel} variant={1} className="banner__art" />
       <div className="banner__content">
-        <Daisy size={40} tone={tone === 'dark' ? 'light' : 'ink'} />
+        <Daisy size={40} tone={tone === 'dark' ? 'light' : 'ink'} variant={daisyVariant} />
         {eyebrow && <p className="eyebrow reveal">{eyebrow}</p>}
         <h2 className="reveal">
           {title}

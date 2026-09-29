@@ -8,7 +8,7 @@ export default function About() {
     <section className="about" aria-labelledby="about-title">
       <Placeholder label="foto das sócias" variant={1} className="about__art" />
       <div className="about__content">
-        <Daisy size={40} />
+        <Daisy size={40} variant="badge" />
         <h2 id="about-title" className="reveal">{about.title}</h2>
         {about.paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>

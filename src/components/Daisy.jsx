@@ -1,27 +1,22 @@
-export default function Daisy({ size = 40, tone = 'ink', className = '' }) {
-  const petals = Array.from({ length: 12 })
-  const color = tone === 'light' ? 'var(--color-bg)' : 'var(--color-ink)'
+import logoMark from '../assets/logo-mark.png'
+import logoBadge from '../assets/logo-mark-badge.png'
+
+export default function Daisy({ size = 40, tone = 'ink', variant = 'logo', className = '' }) {
+  const displaySize = Math.max(size * 4.5, 180)
+  const src = variant === 'badge' ? logoBadge : logoMark
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      className={`daisy ${className}`}
+    <img
+      src={src}
+      alt=""
       aria-hidden="true"
-    >
-      <g fill={color} transform="translate(50 50)">
-        {petals.map((_, index) => (
-          <ellipse
-            key={index}
-            cx="0"
-            cy="-32"
-            rx="7"
-            ry="20"
-            transform={`rotate(${(360 / petals.length) * index})`}
-          />
-        ))}
-      </g>
-    </svg>
+      className={`daisy ${className}`}
+      style={{
+        width: displaySize,
+        height: displaySize,
+        objectFit: 'contain',
+        filter: tone === 'light' ? 'none' : 'invert(1)',
+      }}
+    />
   )
 }

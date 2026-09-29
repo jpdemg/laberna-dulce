@@ -26,7 +26,7 @@ export default function CategoryPage({ slug }) {
           reveal={false}
         />
         <div className="category-banner__content reveal">
-          <Daisy size={36} tone="light" />
+          <Daisy size={36} tone="light" variant="badge" />
           <p className="eyebrow">{category.banner.eyebrow}</p>
           <p>{category.banner.body}</p>
         </div>

@@ -9,7 +9,7 @@ function PlainSection({ title, emphasis, body, imageLabel, reverse }) {
     <article className={`institutional-plain ${reverse ? 'institutional-plain--reverse' : ''}`}>
       <Placeholder label={imageLabel} variant={2} className="institutional-plain__art" />
       <div className="institutional-plain__content">
-        <Daisy size={36} />
+        <Daisy size={36} variant="logo" />
         <h2 className="reveal">
           {title}
           {emphasis && <em>{emphasis}</em>}

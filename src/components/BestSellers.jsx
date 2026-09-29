@@ -11,7 +11,7 @@ export default function BestSellers() {
     <section className="best-sellers" id="best-sellers" aria-labelledby="best-sellers-title">
       <h2 id="best-sellers-title">Best Sellers</h2>
       <div className="best-sellers__caption">
-        <Daisy size={28} />
+        <Daisy size={28} variant="logo" />
         <p className="eyebrow">seleção dos itens mais apaixonantes da laberna dulce</p>
       </div>
       {loading ? <p>Carregando produtos...</p> : <ProductGrid products={products} />}

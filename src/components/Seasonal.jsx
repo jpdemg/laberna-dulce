@@ -11,6 +11,7 @@ export default function Seasonal() {
       cta={seasonal.cta}
       href={seasonal.href}
       imageLabel={seasonal.title}
+      daisyVariant="badge"
     />
   )
 }
