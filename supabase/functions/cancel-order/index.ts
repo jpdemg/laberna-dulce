@@ -1,9 +1,15 @@
+// @ts-nocheck
+import Stripe from 'https://esm.sh/stripe@17?target=deno'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const MP_ACCESS_TOKEN = Deno.env.get('MP_ACCESS_TOKEN')!
+const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY')!
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
+  httpClient: Stripe.createFetchHttpClient(),
+})
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -42,7 +48,7 @@ Deno.serve(async (req) => {
 
     const { data: order, error: orderError } = await admin
       .from('orders')
-      .select('id, user_id, status, mp_payment_id')
+      .select('id, user_id, status, stripe_payment_intent_id')
       .eq('id', orderId)
       .single()
 
@@ -59,24 +65,14 @@ Deno.serve(async (req) => {
     }
 
     if (order.status === 'paid') {
-      if (!order.mp_payment_id) {
+      if (!order.stripe_payment_intent_id) {
         return json({ error: 'Pedido pago sem referência de pagamento, contate o suporte' }, 409)
       }
 
-      const refundResponse = await fetch(
-        `https://api.mercadopago.com/v1/payments/${order.mp_payment_id}/refunds`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${MP_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-
-      if (!refundResponse.ok) {
-        const details = await refundResponse.json().catch(() => null)
-        return json({ error: 'Não foi possível processar o reembolso', details }, 502)
+      try {
+        await stripe.refunds.create({ payment_intent: order.stripe_payment_intent_id })
+      } catch (error) {
+        return json({ error: 'Não foi possível processar o reembolso', details: (error as Error).message }, 502)
       }
     }
 

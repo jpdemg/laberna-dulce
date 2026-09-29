@@ -89,7 +89,7 @@ export default function Checkout() {
 
     await saveProfile({ phone: phoneNumber, phone_country: phoneCountry, address })
 
-    const { data, error: fnError } = await supabase.functions.invoke('create-preference', {
+    const { data, error: fnError } = await supabase.functions.invoke('create-checkout-session', {
       body: {
         items: items.map((item) => ({ id: item.id, quantity: item.quantity, size: item.size, notes: item.notes })),
         address: { ...address, phone: phoneNumber, phone_country: phoneCountry },
@@ -230,7 +230,7 @@ export default function Checkout() {
         {error && <p className="auth-card__error">{error}</p>}
 
         <button type="submit" className="btn btn--primary" disabled={loading}>
-          {loading ? 'Redirecionando...' : 'Pagar com Mercado Pago'}
+          {loading ? 'Redirecionando...' : 'Ir para o pagamento'}
         </button>
       </form>
     </div>

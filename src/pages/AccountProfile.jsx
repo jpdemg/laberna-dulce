@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import PhoneInput from '../components/PhoneInput'
 import { paymentMethodLabels } from '../lib/paymentMethods'
+import { fetchAddressByCep } from '../lib/viacep'
 import {
   isNotEmpty,
   isValidBrState,
@@ -31,6 +32,7 @@ export default function AccountProfile() {
   const [fieldErrors, setFieldErrors] = useState({})
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [cepLoading, setCepLoading] = useState(false)
 
   useEffect(() => {
     if (!profile) return
@@ -43,6 +45,25 @@ export default function AccountProfile() {
 
   const updateAddressField = (field) => (event) =>
     setAddress((current) => ({ ...current, [field]: event.target.value }))
+
+  const handleCepChange = (event) => {
+    updateAddressField('zip')(event)
+    const digits = event.target.value.replace(/\D/g, '')
+    if (digits.length === 8) {
+      setCepLoading(true)
+      fetchAddressByCep(digits).then((found) => {
+        setCepLoading(false)
+        if (found) setAddress((current) => ({ ...current, ...found }))
+      })
+    }
+  }
+
+  const handleCepBlur = async () => {
+    setCepLoading(true)
+    const found = await fetchAddressByCep(address.zip)
+    setCepLoading(false)
+    if (found) setAddress((current) => ({ ...current, ...found }))
+  }
 
   const validate = () => {
     const errors = {}
@@ -121,8 +142,13 @@ export default function AccountProfile() {
         <fieldset>
           <legend>Endereço de entrega salvo</legend>
           <label>
-            CEP
-            <input placeholder="Ex.: 04530-001" value={address.zip} onChange={updateAddressField('zip')} />
+            CEP {cepLoading && '(buscando endereço...)'}
+            <input
+              placeholder="Ex.: 04530-001"
+              value={address.zip}
+              onChange={handleCepChange}
+              onBlur={handleCepBlur}
+            />
             {fieldErrors.zip && <span className="field-error">{fieldErrors.zip}</span>}
           </label>
           <label>

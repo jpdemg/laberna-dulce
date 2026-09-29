@@ -1,6 +1,8 @@
+// @ts-nocheck
+import Stripe from 'https://esm.sh/stripe@17?target=deno'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const MP_ACCESS_TOKEN = Deno.env.get('MP_ACCESS_TOKEN')!
+const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY')!
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -9,6 +11,10 @@ const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://jpdemg.github.io/laberna-d
 // Precisa ser exatamente igual a `defaultSizes` em src/data/site.js.
 // O multiplicador nunca vem do cliente, só o rótulo do tamanho escolhido.
 const SIZE_MULTIPLIERS: Record<string, number> = { P: 0.8, M: 1, G: 1.3 }
+
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
+  httpClient: Stripe.createFetchHttpClient(),
+})
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -96,46 +102,29 @@ Deno.serve(async (req) => {
       })),
     )
 
-    const preferenceResponse = await fetch('https://api.mercadopago.com/checkout/preferences', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${MP_ACCESS_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: orderItems.map((item) => ({
-          title: `${item.name} (Tamanho ${item.size})`,
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          currency_id: 'BRL',
-        })),
-        payer: { email: userData.user.email },
-        external_reference: order.id,
-        back_urls: {
-          success: `${SITE_URL}/pedido-confirmado?order=${order.id}`,
-          pending: `${SITE_URL}/pedido-confirmado?order=${order.id}`,
-          failure: `${SITE_URL}/pedido-confirmado?order=${order.id}`,
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card', 'boleto'],
+      customer_email: userData.user.email,
+      line_items: orderItems.map((item) => ({
+        price_data: {
+          currency: 'brl',
+          product_data: { name: `${item.name} (Tamanho ${item.size})` },
+          unit_amount: Math.round(item.unit_price * 100),
         },
-        auto_return: 'approved',
-        notification_url: `${SUPABASE_URL}/functions/v1/mercadopago-webhook`,
-      }),
+        quantity: item.quantity,
+      })),
+      metadata: { order_id: order.id },
+      success_url: `${SITE_URL}/pedido-confirmado?order=${order.id}`,
+      cancel_url: `${SITE_URL}/pedido-confirmado?order=${order.id}`,
     })
-
-    const preference = await preferenceResponse.json()
-
-    if (!preferenceResponse.ok) {
-      return json({ error: 'Erro ao criar preferência de pagamento', details: preference }, 502)
-    }
-
-    const useSandbox = Deno.env.get('MP_USE_SANDBOX') === 'true'
-    const checkoutUrl = useSandbox ? preference.sandbox_init_point : preference.init_point
 
     await admin
       .from('orders')
-      .update({ mp_preference_id: preference.id, checkout_url: checkoutUrl })
+      .update({ stripe_session_id: session.id, checkout_url: session.url })
       .eq('id', order.id)
 
-    return json({ init_point: checkoutUrl, order_id: order.id })
+    return json({ init_point: session.url, order_id: order.id })
   } catch (error) {
     return json({ error: (error as Error).message }, 500)
   }
