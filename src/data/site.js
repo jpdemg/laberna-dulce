@@ -331,3 +331,16 @@ export function findProductById(id) {
 
   return null
 }
+
+// ---------- Busca ao vivo (ícone de pesquisa no header) ----------
+
+const searchIndex = [
+  ...bestSellers,
+  ...Object.values(categories).flatMap((category) => category.products),
+]
+
+export function searchProducts(query) {
+  const q = query.trim().toLowerCase()
+  if (!q) return []
+  return searchIndex.filter((product) => product.name.toLowerCase().includes(q)).slice(0, 8)
+}

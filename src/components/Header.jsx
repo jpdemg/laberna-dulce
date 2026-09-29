@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { brand, mainNav } from '../data/site'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import SearchBox from './SearchBox'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -55,13 +56,7 @@ export default function Header() {
             </svg>
             <span className="site-header__tooltip">{user ? 'Minha conta' : 'Login'}</span>
           </Link>
-          <button className="site-header__action" aria-label="Buscar produtos">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="10.5" cy="10.5" r="6.5" />
-              <path d="M20 20 15.3 15.3" />
-            </svg>
-            <span className="site-header__tooltip">Pesquisar</span>
-          </button>
+          <SearchBox />
           <Link to="/carrinho" aria-label="Carrinho" className="site-header__action site-header__cart">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 8h14l-1.3 11H6.3Z" />
