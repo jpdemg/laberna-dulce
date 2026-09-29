@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     return () => listener.subscription.unsubscribe()
   }, [])
 
-  const signUp = ({ email, password, firstName, lastName }) =>
+  const signUp = ({ email, password, firstName, lastName, address }) =>
     supabase.auth.signUp({
       email,
       password,
@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
           first_name: firstName,
           last_name: lastName,
           name: `${firstName} ${lastName}`.trim(),
+          address,
         },
       },
     })
