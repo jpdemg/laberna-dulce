@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      payment_method_types: ['card', 'boleto'],
+      payment_method_types: ['card', 'boleto', 'pix'],
       customer_email: userData.user.email,
       line_items: orderItems.map((item) => ({
         price_data: {
