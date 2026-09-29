@@ -6,6 +6,10 @@ const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://jpdemg.github.io/laberna-dulce'
 
+// Precisa ser exatamente igual a `defaultSizes` em src/data/site.js.
+// O multiplicador nunca vem do cliente, só o rótulo do tamanho escolhido.
+const SIZE_MULTIPLIERS: Record<string, number> = { P: 0.8, M: 1, G: 1.3 }
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -55,14 +59,17 @@ Deno.serve(async (req) => {
 
     const productMap = new Map(products.map((product) => [product.id, product]))
 
-    const orderItems = items.map((item: { id: string; quantity: number }) => {
+    const orderItems = items.map((item: { id: string; quantity: number; size?: string; notes?: string }) => {
       const product = productMap.get(item.id)
       if (!product) throw new Error(`Produto ${item.id} não encontrado`)
+      const multiplier = SIZE_MULTIPLIERS[item.size ?? 'M'] ?? 1
       return {
         product_id: product.id,
         name: product.name,
         quantity: Math.max(1, Math.floor(item.quantity)),
-        unit_price: Number(product.price),
+        unit_price: Number(product.price) * multiplier,
+        size: item.size ?? 'M',
+        notes: item.notes ?? '',
       }
     })
 
@@ -84,6 +91,8 @@ Deno.serve(async (req) => {
         product_id: item.product_id,
         quantity: item.quantity,
         unit_price: item.unit_price,
+        size: item.size,
+        notes: item.notes,
       })),
     )
 
@@ -95,7 +104,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         items: orderItems.map((item) => ({
-          title: item.name,
+          title: `${item.name} (Tamanho ${item.size})`,
           quantity: item.quantity,
           unit_price: item.unit_price,
           currency_id: 'BRL',

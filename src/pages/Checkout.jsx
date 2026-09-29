@@ -91,7 +91,7 @@ export default function Checkout() {
 
     const { data, error: fnError } = await supabase.functions.invoke('create-preference', {
       body: {
-        items: items.map((item) => ({ id: item.id, quantity: item.quantity })),
+        items: items.map((item) => ({ id: item.id, quantity: item.quantity, size: item.size, notes: item.notes })),
         address: { ...address, phone: phoneNumber, phone_country: phoneCountry },
       },
     })

@@ -803,6 +803,8 @@
 }
 
 .product-detail__field textarea {
+  width: 100%;
+  box-sizing: border-box;
   font: inherit;
   padding: 0.7em 0.9em;
   border: 1px solid var(--color-line);
@@ -889,6 +891,8 @@
 }
 
 .auth-card input {
+  width: 100%;
+  box-sizing: border-box;
   font: inherit;
   padding: 0.7em 0.9em;
   border: 1px solid var(--color-line);
@@ -1101,6 +1105,8 @@
 }
 
 .checkout-form input {
+  width: 100%;
+  box-sizing: border-box;
   font: inherit;
   padding: 0.7em 0.9em;
   border: 1px solid var(--color-line);
