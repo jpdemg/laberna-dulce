@@ -1,8 +1,10 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import usePageMeta from '../hooks/usePageMeta'
 
 export default function AdminLayout() {
   usePageMeta({ title: 'Administração', noindex: true })
+
+  const location = useLocation()
 
   return (
     <div className="admin-page">
@@ -15,7 +17,9 @@ export default function AdminLayout() {
         <NavLink to="/admin/pedidos">Pedidos</NavLink>
       </nav>
 
-      <Outlet />
+      <div key={location.pathname} className="tab-content-fade">
+        <Outlet />
+      </div>
     </div>
   )
 }

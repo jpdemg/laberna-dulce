@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import usePageMeta from '../hooks/usePageMeta'
 
@@ -7,6 +7,7 @@ export default function AccountLayout() {
 
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleSignOut = async () => {
     await signOut()
@@ -25,7 +26,9 @@ export default function AccountLayout() {
         <NavLink to="/conta/pedidos">Meus pedidos</NavLink>
       </nav>
 
-      <Outlet />
+      <div key={location.pathname} className="tab-content-fade">
+        <Outlet />
+      </div>
 
       <button type="button" className="btn btn--outline" onClick={handleSignOut}>
         Sair da conta
