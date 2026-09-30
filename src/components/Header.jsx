@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { brand, mainNav } from '../data/site'
 import { useAuth } from '../context/AuthContext'
@@ -11,6 +11,18 @@ export default function Header() {
   const { user } = useAuth()
   const { count } = useCart()
   const { profile } = useProfile()
+  const [cartBump, setCartBump] = useState(false)
+  const prevCount = useRef(count)
+
+  useEffect(() => {
+    if (count > prevCount.current) {
+      setCartBump(true)
+      const timeout = setTimeout(() => setCartBump(false), 400)
+      prevCount.current = count
+      return () => clearTimeout(timeout)
+    }
+    prevCount.current = count
+  }, [count])
 
   return (
     <header className="site-header">
@@ -72,7 +84,7 @@ export default function Header() {
               <path d="M5 8h14l-1.3 11H6.3Z" />
               <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
             </svg>
-            <span className="site-header__cart-count">{count}</span>
+            <span className={`site-header__cart-count ${cartBump ? 'is-bumping' : ''}`}>{count}</span>
             <span className="site-header__tooltip">Carrinho</span>
           </Link>
         </div>

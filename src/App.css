@@ -251,6 +251,28 @@
   justify-content: center;
 }
 
+.site-header__cart-count.is-bumping {
+  animation: cart-count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cart-count-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__cart-count.is-bumping {
+    animation: none;
+  }
+}
+
 .site-header__tooltip {
   position: absolute;
   top: calc(100% + 10px);
@@ -553,6 +575,75 @@
 
 .product-card .btn--add {
   margin-top: 0.5rem;
+}
+
+.icon-add-btn {
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.icon-add-btn.is-added {
+  animation: icon-add-btn-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-color: #2f7d4f !important;
+  background: #2f7d4f !important;
+  color: var(--color-white) !important;
+}
+
+@keyframes icon-add-btn-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(0.92);
+  }
+  65% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.icon-add-btn__icon {
+  position: relative;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+
+.icon-add-btn__icon-cart,
+.icon-add-btn__icon-check {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.icon-add-btn__icon-check {
+  opacity: 0;
+  transform: scale(0.5) rotate(-45deg);
+}
+
+.icon-add-btn.is-added .icon-add-btn__icon-cart {
+  opacity: 0;
+  transform: scale(0.5) rotate(45deg);
+}
+
+.icon-add-btn.is-added .icon-add-btn__icon-check {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-add-btn.is-added {
+    animation: none;
+  }
 }
 
 /* About */

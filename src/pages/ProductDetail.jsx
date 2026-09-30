@@ -225,8 +225,28 @@ export default function ProductDetail() {
           </label>
 
           <div className="product-detail__actions">
-            <button type="button" className="btn btn--outline" onClick={handleAddToCart}>
-              {added ? 'Adicionado ✓' : 'Adicionar ao carrinho'}
+            <button
+              type="button"
+              className={`btn btn--outline icon-add-btn ${added ? 'is-added' : ''}`}
+              onClick={handleAddToCart}
+            >
+              <span className="icon-add-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="icon-add-btn__icon-cart">
+                  <path d="M5 8h14l-1.3 11H6.3Z" />
+                  <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
+                </svg>
+                <svg viewBox="0 0 24 24" className="icon-add-btn__icon-check">
+                  <path
+                    d="M5 13l5 5L20 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              {added ? 'Adicionado' : 'Adicionar ao carrinho'}
             </button>
             <button type="button" className="btn btn--primary" onClick={handleBuyNow}>
               Comprar agora

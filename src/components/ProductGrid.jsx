@@ -25,12 +25,21 @@ export default function ProductGrid({ products }) {
             <h3>{product.name}</h3>
           </Link>
           <p className="product-card__price">{formatBRL(product.price)}</p>
-          <button type="button" className="btn btn--add" onClick={() => handleAdd(product)}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 8h14l-1.3 11H6.3Z" />
-              <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
-            </svg>
-            {addedId === product.id ? 'Adicionado ✓' : 'Adicionar ao carrinho'}
+          <button
+            type="button"
+            className={`btn btn--add icon-add-btn ${addedId === product.id ? 'is-added' : ''}`}
+            onClick={() => handleAdd(product)}
+          >
+            <span className="icon-add-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="icon-add-btn__icon-cart">
+                <path d="M5 8h14l-1.3 11H6.3Z" />
+                <path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2" />
+              </svg>
+              <svg viewBox="0 0 24 24" className="icon-add-btn__icon-check">
+                <path d="M5 13l5 5L20 7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            {addedId === product.id ? 'Adicionado' : 'Adicionar ao carrinho'}
           </button>
         </li>
       ))}
