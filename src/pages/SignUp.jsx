@@ -60,7 +60,9 @@ export default function SignUp() {
     if (!isValidName(firstName)) errors.firstName = 'Digite um nome válido (mínimo 2 letras).'
     if (!isValidName(lastName)) errors.lastName = 'Digite um sobrenome válido (mínimo 2 letras).'
     if (!isValidEmail(email)) errors.email = 'Digite um e-mail válido.'
-    if (!isValidPassword(password)) errors.password = 'A senha precisa ter no mínimo 6 caracteres.'
+    if (!isValidPassword(password)) {
+      errors.password = 'A senha precisa ter no mínimo 6 caracteres, com maiúscula, minúscula, número e símbolo.'
+    }
     if (!isValidCep(address.zip)) errors.zip = 'Digite um CEP válido, com 8 dígitos.'
     if (!isNotEmpty(address.street)) errors.street = 'Informe o nome da rua.'
     if (!isNotEmpty(address.number)) errors.number = 'Informe o número.'
@@ -171,10 +173,13 @@ export default function SignUp() {
           <input
             type="password"
             required
-            placeholder="Mínimo 6 caracteres"
+            placeholder="Ex.: Docinho#25"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <span className="field-hint">
+            Mínimo 6 caracteres, com letra maiúscula, minúscula, número e símbolo (ex.: ! # @ %).
+          </span>
           {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
         </label>
 

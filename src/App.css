@@ -1556,6 +1556,11 @@
   font-size: 0.75rem;
 }
 
+.field-hint {
+  color: var(--color-accent-dark);
+  font-size: 0.75rem;
+}
+
 .phone-input {
   display: flex;
   gap: 0.5rem;

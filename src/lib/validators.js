@@ -9,7 +9,13 @@ export function isValidEmail(value) {
 }
 
 export function isValidPassword(value) {
-  return value.length >= 6
+  return (
+    value.length >= 6 &&
+    /[a-z]/.test(value) &&
+    /[A-Z]/.test(value) &&
+    /[0-9]/.test(value) &&
+    /[^A-Za-z0-9]/.test(value)
+  )
 }
 
 export function isValidPhoneNumber(value, countryCode) {
