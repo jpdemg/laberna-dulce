@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import usePageMeta from '../hooks/usePageMeta'
 import { formatBRL } from '../lib/format'
 
 const statusCopy = {
@@ -19,6 +20,8 @@ const statusCopy = {
 }
 
 export default function OrderStatus() {
+  usePageMeta({ title: 'Status do pedido', noindex: true })
+
   const [searchParams] = useSearchParams()
   const orderId = searchParams.get('order')
   const [order, setOrder] = useState(null)

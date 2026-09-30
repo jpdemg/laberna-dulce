@@ -26,11 +26,16 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font: 16px/1.6 var(--font-body);
   background: var(--color-bg);
   color: var(--color-ink);
+  overflow-x: hidden;
 }
 
 h1,

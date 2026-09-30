@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { categories } from '../data/site'
 import { useProductsByCategory } from '../hooks/useProducts'
+import usePageMeta from '../hooks/usePageMeta'
 import Breadcrumb from '../components/Breadcrumb'
 import ProductGrid from '../components/ProductGrid'
 import ProductMedia from '../components/ProductMedia'
@@ -9,6 +10,11 @@ import Daisy from '../components/Daisy'
 export default function CategoryPage({ slug }) {
   const category = categories[slug]
   const { products, loading } = useProductsByCategory(slug)
+
+  usePageMeta({
+    title: category?.label,
+    description: category?.banner?.body,
+  })
 
   if (!category) {
     return <Navigate to="/" replace />

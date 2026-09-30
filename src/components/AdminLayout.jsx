@@ -1,6 +1,9 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function AdminLayout() {
+  usePageMeta({ title: 'Administração', noindex: true })
+
   return (
     <div className="admin-page">
       <h1 className="reveal">painel de administração</h1>

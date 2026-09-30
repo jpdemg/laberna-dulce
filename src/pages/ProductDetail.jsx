@@ -4,6 +4,7 @@ import Breadcrumb from '../components/Breadcrumb'
 import ProductMedia from '../components/ProductMedia'
 import { useCart } from '../context/CartContext'
 import { useProduct } from '../hooks/useProducts'
+import usePageMeta from '../hooks/usePageMeta'
 import { categories } from '../data/site'
 import { formatBRL } from '../lib/format'
 
@@ -20,6 +21,11 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
   const [notes, setNotes] = useState('')
   const [added, setAdded] = useState(false)
+
+  usePageMeta({
+    title: product?.name,
+    description: product?.description,
+  })
 
   if (loading) {
     return <div className="product-detail">Carregando...</div>

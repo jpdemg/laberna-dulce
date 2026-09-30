@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import usePageMeta from '../hooks/usePageMeta'
 import { fetchAddressByCep } from '../lib/viacep'
 import { isValidName, isValidEmail, isValidPassword, isNotEmpty, isValidCep, isValidBrState } from '../lib/validators'
 
@@ -15,6 +16,8 @@ const emptyAddress = {
 }
 
 export default function SignUp() {
+  usePageMeta({ title: 'Criar conta', noindex: true })
+
   const { signUp } = useAuth()
   const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')

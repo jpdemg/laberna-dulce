@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import usePageMeta from '../hooks/usePageMeta'
 import { formatBRL } from '../lib/format'
 
 export default function Cart() {
+  usePageMeta({ title: 'Carrinho', noindex: true })
+
   const { items, setQuantity, removeItem, subtotal } = useCart()
 
   if (items.length === 0) {

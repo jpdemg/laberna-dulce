@@ -1,7 +1,10 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function AccountLayout() {
+  usePageMeta({ title: 'Minha conta', noindex: true })
+
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
 

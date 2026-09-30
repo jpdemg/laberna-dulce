@@ -9,6 +9,7 @@ import { fetchAddressByCep } from '../lib/viacep'
 import PhoneInput from '../components/PhoneInput'
 import { isNotEmpty, isValidCep, isValidBrState, isValidPhoneNumber } from '../lib/validators'
 import { getMinScheduleDate, generateTimeSlots } from '../lib/scheduling'
+import usePageMeta from '../hooks/usePageMeta'
 
 const emptyAddress = {
   street: '',
@@ -21,6 +22,8 @@ const emptyAddress = {
 }
 
 export default function Checkout() {
+  usePageMeta({ title: 'Finalizar compra', noindex: true })
+
   const { items, subtotal, clearCart } = useCart()
   const { user } = useAuth()
   const { profile, loading: profileLoading, saveProfile } = useProfile()

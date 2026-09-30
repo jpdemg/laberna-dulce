@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { institutionalPages } from '../data/site'
+import usePageMeta from '../hooks/usePageMeta'
 import ImageTextBanner from '../components/ImageTextBanner'
 import Placeholder from '../components/Placeholder'
 import Daisy from '../components/Daisy'
@@ -36,6 +37,8 @@ function GallerySection({ count = 4 }) {
 
 export default function InstitutionalPage({ slug }) {
   const page = institutionalPages[slug]
+
+  usePageMeta({ title: page?.label })
 
   if (!page) {
     return <Navigate to="/" replace />

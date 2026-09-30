@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function NotFound() {
+  usePageMeta({ title: 'Página não encontrada', noindex: true })
+
   return (
     <div className="not-found">
       <h1>404</h1>

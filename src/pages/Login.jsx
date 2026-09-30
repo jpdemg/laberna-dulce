@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function Login() {
+  usePageMeta({ title: 'Entrar', noindex: true })
+
   const { signIn } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
