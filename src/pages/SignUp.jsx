@@ -4,7 +4,15 @@ import { useAuth } from '../context/AuthContext'
 import usePageMeta from '../hooks/usePageMeta'
 import useHCaptcha from '../hooks/useHCaptcha'
 import { fetchAddressByCep } from '../lib/viacep'
-import { isValidName, isValidEmail, isValidPassword, isNotEmpty, isValidCep, isValidBrState } from '../lib/validators'
+import {
+  isValidName,
+  isValidEmail,
+  isValidPassword,
+  getPasswordRequirements,
+  isNotEmpty,
+  isValidCep,
+  isValidBrState,
+} from '../lib/validators'
 
 const emptyAddress = {
   street: '',
@@ -177,9 +185,19 @@ export default function SignUp() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <span className="field-hint">
-            Mínimo 6 caracteres, com letra maiúscula, minúscula, número e símbolo (ex.: ! # @ %).
-          </span>
+          <ul className="password-requirements">
+            {getPasswordRequirements(password).map((requirement) => (
+              <li
+                key={requirement.key}
+                className={`password-requirements__item ${requirement.met ? 'is-met' : ''}`}
+              >
+                <span className="password-requirements__icon" aria-hidden="true">
+                  {requirement.met ? '✓' : '○'}
+                </span>
+                {requirement.label}
+              </li>
+            ))}
+          </ul>
           {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
         </label>
 
