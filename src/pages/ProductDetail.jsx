@@ -35,6 +35,10 @@ export default function ProductDetail() {
   const categoryLabel = categories[product.category]?.label ?? null
   const gallery = product.images?.length > 0 ? product.images.map((_, index) => index) : FALLBACK_GALLERY
 
+  const showPhoto = (index) => setActivePhoto((index + gallery.length) % gallery.length)
+  const showPrevPhoto = () => showPhoto(activePhoto - 1)
+  const showNextPhoto = () => showPhoto(activePhoto + 1)
+
   const buildCartItem = () => ({
     ...product,
     price: unitPrice,
@@ -59,13 +63,54 @@ export default function ProductDetail() {
 
       <div className="product-detail__layout">
         <div className="product-detail__gallery">
-          <ProductMedia
-            product={product}
-            variant={activePhoto}
-            seal
-            className="product-detail__main-photo"
-            reveal={false}
-          />
+          <div className="product-detail__main-wrap">
+            <ProductMedia
+              key={activePhoto}
+              product={product}
+              variant={activePhoto}
+              seal
+              className="product-detail__main-photo"
+              reveal={false}
+            />
+            {gallery.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="product-detail__nav product-detail__nav--prev"
+                  onClick={showPrevPhoto}
+                  aria-label="Foto anterior"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path
+                      d="M15 5l-7 7 7 7"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="product-detail__nav product-detail__nav--next"
+                  onClick={showNextPhoto}
+                  aria-label="Próxima foto"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path
+                      d="M9 5l7 7-7 7"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
           <div className="product-detail__thumbs">
             {gallery.map((variant, index) => (
               <button

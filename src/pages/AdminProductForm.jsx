@@ -188,6 +188,11 @@ export default function AdminProductForm() {
 
       <fieldset>
         <legend>Fotos</legend>
+        <p className="admin-product-form__hint">
+          O site recorta a foto pra caber num quadro de proporção 4:3 (largura : altura). Pra evitar
+          que partes importantes fiquem cortadas, envie fotos já nessa proporção, por exemplo 1600×1200
+          ou 1200×900, com o produto centralizado.
+        </p>
         <div className="admin-product-form__photos">
           {product.images.map((url) => (
             <div key={url} className="admin-product-form__photo">
