@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
       password,
       options: {
         captchaToken,
+        emailRedirectTo: `${window.location.origin}/laberna-dulce/`,
         data: {
           first_name: firstName,
           last_name: lastName,
