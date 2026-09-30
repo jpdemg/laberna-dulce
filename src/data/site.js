@@ -281,3 +281,31 @@ export const footer = {
   ],
   legal: '© [ANO] por [Razão Social LTDA] | CNPJ [00.000.000/0001-00]',
 }
+
+export const faq = [
+  {
+    question: '[Com quantos dias de antecedência preciso encomendar?]',
+    answer: '[Substituir por resposta real. Ex.: pedidos simples com 2 dias de antecedência, bolos personalizados com 7 dias.]',
+  },
+  {
+    question: '[Vocês entregam em toda São Paulo?]',
+    answer: '[Substituir por resposta real sobre área de entrega e taxa.]',
+  },
+  {
+    question: '[Quais formas de pagamento vocês aceitam?]',
+    answer: '[Substituir por resposta real: Pix, cartão de crédito e boleto pelo site.]',
+  },
+  {
+    question: '[Vocês fazem bolos personalizados?]',
+    answer: '[Substituir por resposta real sobre personalização de sabor, tamanho e decoração.]',
+  },
+  {
+    question: '[Como funciona o cancelamento de um pedido?]',
+    answer: '[Substituir por resposta real sobre prazo de cancelamento e reembolso.]',
+  },
+  {
+    question: '[Como faço para retirar meu pedido no ateliê?]',
+    answer: '[Substituir por resposta real sobre horário e endereço de retirada.]',
+  },
+]
+

@@ -1,26 +1,29 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import usePageMeta from '../hooks/usePageMeta'
 import useHCaptcha from '../hooks/useHCaptcha'
+import { isValidEmail } from '../lib/validators'
 
-export default function Login() {
-  usePageMeta({ title: 'Entrar', noindex: true })
+export default function ForgotPassword() {
+  usePageMeta({ title: 'Recuperar senha', noindex: true })
 
-  const { signIn } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { requestPasswordReset } = useAuth()
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
   const { containerRef, execute, reset } = useHCaptcha()
-
-  const redirectTo = location.state?.from ?? '/'
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
+
+    if (!isValidEmail(email)) {
+      setError('Digite um e-mail válido.')
+      return
+    }
+
     setLoading(true)
 
     let captchaToken
@@ -32,21 +35,40 @@ export default function Login() {
       return
     }
 
-    const { error: signInError } = await signIn({ email, password, captchaToken })
+    const { error: resetError } = await requestPasswordReset({ email, captchaToken })
     reset()
     setLoading(false)
-    if (signInError) {
-      setError(signInError.message)
+
+    if (resetError) {
+      setError(resetError.message)
       return
     }
-    navigate(redirectTo, { replace: true })
+
+    setSent(true)
+  }
+
+  if (sent) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card reveal">
+          <h1>Verifique seu e-mail</h1>
+          <p>
+            Se {email} tiver uma conta na Laberna Dulce, enviamos um link pra redefinir a senha. Ele
+            expira em algumas horas.
+          </p>
+          <Link className="btn btn--primary" to="/login">
+            Voltar para o login
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="auth-page">
       <form className="auth-card reveal" onSubmit={handleSubmit}>
-        <h1>Entrar</h1>
-        <p className="eyebrow">acesse sua conta laberna dulce</p>
+        <h1>Recuperar senha</h1>
+        <p className="eyebrow">enviamos um link pra você criar uma nova senha</p>
 
         <label>
           E-mail
@@ -59,31 +81,16 @@ export default function Login() {
           />
         </label>
 
-        <label>
-          Senha
-          <input
-            type="password"
-            required
-            placeholder="Sua senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-
-        <Link className="auth-card__forgot" to="/esqueci-senha">
-          Esqueceu a senha?
-        </Link>
-
         {error && <p className="auth-card__error">{error}</p>}
 
         <div ref={containerRef} />
 
         <button type="submit" className="btn btn--primary" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
+          {loading ? 'Enviando...' : 'Enviar link'}
         </button>
 
         <p className="auth-card__switch">
-          Ainda não tem conta? <Link to="/cadastro">Criar conta</Link>
+          <Link to="/login">Voltar para o login</Link>
         </p>
       </form>
     </div>

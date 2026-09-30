@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
+import { useAuth } from '../context/AuthContext'
+import useHCaptcha from '../hooks/useHCaptcha'
 import PhoneInput from '../components/PhoneInput'
 import { paymentMethodLabels } from '../lib/paymentMethods'
 import { fetchAddressByCep } from '../lib/viacep'
@@ -8,6 +10,8 @@ import {
   isValidBrState,
   isValidCep,
   isValidName,
+  isValidPassword,
+  getPasswordRequirements,
   isValidPhoneNumber,
 } from '../lib/validators'
 
@@ -23,6 +27,8 @@ const emptyAddress = {
 
 export default function AccountProfile() {
   const { profile, loading: profileLoading, saveProfile } = useProfile()
+  const { user, signIn, updatePassword } = useAuth()
+  const { containerRef, execute, reset } = useHCaptcha()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -33,6 +39,12 @@ export default function AccountProfile() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [cepLoading, setCepLoading] = useState(false)
+
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSaving, setPasswordSaving] = useState(false)
+  const [passwordSaved, setPasswordSaved] = useState(false)
 
   useEffect(() => {
     if (!profile) return
@@ -102,6 +114,50 @@ export default function AccountProfile() {
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handleChangePassword = async (event) => {
+    event.preventDefault()
+    setPasswordSaved(false)
+    setPasswordError('')
+
+    if (!isValidPassword(newPassword)) {
+      setPasswordError('A nova senha precisa cumprir todos os requisitos abaixo.')
+      return
+    }
+
+    setPasswordSaving(true)
+
+    let captchaToken
+    try {
+      captchaToken = await execute()
+    } catch {
+      setPasswordSaving(false)
+      setPasswordError('Não foi possível validar o captcha. Tente novamente.')
+      return
+    }
+
+    const { error: reauthError } = await signIn({ email: user.email, password: currentPassword, captchaToken })
+    reset()
+
+    if (reauthError) {
+      setPasswordSaving(false)
+      setPasswordError('Senha atual incorreta.')
+      return
+    }
+
+    const { error: updateError } = await updatePassword(newPassword)
+    setPasswordSaving(false)
+
+    if (updateError) {
+      setPasswordError(updateError.message)
+      return
+    }
+
+    setCurrentPassword('')
+    setNewPassword('')
+    setPasswordSaved(true)
+    setTimeout(() => setPasswordSaved(false), 2000)
   }
 
   return (
@@ -221,6 +277,53 @@ export default function AccountProfile() {
         <button type="submit" className="btn btn--primary" disabled={saving || profileLoading}>
           {saving ? 'Salvando...' : saved ? 'Salvo ✓' : 'Salvar dados'}
         </button>
+      </form>
+
+      <form onSubmit={handleChangePassword} className="checkout-form">
+        <fieldset>
+          <legend>Trocar senha</legend>
+
+          <label>
+            Senha atual
+            <input
+              type="password"
+              placeholder="Sua senha atual"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+          </label>
+
+          <label>
+            Nova senha
+            <input
+              type="password"
+              placeholder="Ex.: Docinho#25"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <ul className="password-requirements">
+              {getPasswordRequirements(newPassword).map((requirement) => (
+                <li
+                  key={requirement.key}
+                  className={`password-requirements__item ${requirement.met ? 'is-met' : ''}`}
+                >
+                  <span className="password-requirements__icon" aria-hidden="true">
+                    {requirement.met ? '✓' : '○'}
+                  </span>
+                  {requirement.label}
+                </li>
+              ))}
+            </ul>
+          </label>
+
+          {passwordError && <p className="field-error">{passwordError}</p>}
+
+          <div ref={containerRef} />
+
+          <button type="submit" className="btn btn--outline" disabled={passwordSaving}>
+            {passwordSaving ? 'Salvando...' : passwordSaved ? 'Senha alterada ✓' : 'Trocar senha'}
+          </button>
+        </fieldset>
       </form>
     </section>
   )

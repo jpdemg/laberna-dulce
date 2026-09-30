@@ -78,6 +78,9 @@ export default function Footer() {
                   <Link to={item.href}>{item.label}</Link>
                 </li>
               ))}
+            <li>
+              <Link to="/faq">FAQ</Link>
+            </li>
           </ul>
         </nav>
 

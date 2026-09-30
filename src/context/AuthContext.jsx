@@ -41,6 +41,14 @@ export function AuthProvider({ children }) {
   const signIn = ({ email, password, captchaToken }) =>
     supabase.auth.signInWithPassword({ email, password, options: { captchaToken } })
 
+  const requestPasswordReset = ({ email, captchaToken }) =>
+    supabase.auth.resetPasswordForEmail(email, {
+      captchaToken,
+      redirectTo: `${window.location.origin}/laberna-dulce/redefinir-senha`,
+    })
+
+  const updatePassword = (password) => supabase.auth.updateUser({ password })
+
   const signOut = () => supabase.auth.signOut()
 
   const value = {
@@ -49,6 +57,8 @@ export function AuthProvider({ children }) {
     loading,
     signUp,
     signIn,
+    requestPasswordReset,
+    updatePassword,
     signOut,
   }
 
