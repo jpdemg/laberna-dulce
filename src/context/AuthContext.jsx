@@ -20,11 +20,12 @@ export function AuthProvider({ children }) {
     return () => listener.subscription.unsubscribe()
   }, [])
 
-  const signUp = ({ email, password, firstName, lastName, address }) =>
+  const signUp = ({ email, password, firstName, lastName, address, captchaToken }) =>
     supabase.auth.signUp({
       email,
       password,
       options: {
+        captchaToken,
         data: {
           first_name: firstName,
           last_name: lastName,
@@ -34,8 +35,8 @@ export function AuthProvider({ children }) {
       },
     })
 
-  const signIn = ({ email, password }) =>
-    supabase.auth.signInWithPassword({ email, password })
+  const signIn = ({ email, password, captchaToken }) =>
+    supabase.auth.signInWithPassword({ email, password, options: { captchaToken } })
 
   const signOut = () => supabase.auth.signOut()
 

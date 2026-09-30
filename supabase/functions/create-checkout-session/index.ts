@@ -69,10 +69,12 @@ Deno.serve(async (req) => {
       const product = productMap.get(item.id)
       if (!product) throw new Error(`Produto ${item.id} não encontrado`)
       const multiplier = SIZE_MULTIPLIERS[item.size ?? 'M'] ?? 1
+      const rawQuantity = Math.floor(Number(item.quantity))
+      const quantity = Number.isFinite(rawQuantity) ? Math.min(Math.max(rawQuantity, 1), 50) : 1
       return {
         product_id: product.id,
         name: product.name,
-        quantity: Math.max(1, Math.floor(item.quantity)),
+        quantity,
         unit_price: Number(product.price) * multiplier,
         size: item.size ?? 'M',
         notes: item.notes ?? '',
@@ -100,7 +102,7 @@ Deno.serve(async (req) => {
       return json({ error: 'Não foi possível criar o pedido' }, 500)
     }
 
-    await admin.from('order_items').insert(
+    const { error: itemsError } = await admin.from('order_items').insert(
       orderItems.map((item) => ({
         order_id: order.id,
         product_id: item.product_id,
@@ -110,6 +112,11 @@ Deno.serve(async (req) => {
         notes: item.notes,
       })),
     )
+
+    if (itemsError) {
+      await admin.from('orders').delete().eq('id', order.id)
+      return json({ error: 'Não foi possível registrar os itens do pedido' }, 500)
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',

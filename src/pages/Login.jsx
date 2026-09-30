@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import usePageMeta from '../hooks/usePageMeta'
+import useHCaptcha from '../hooks/useHCaptcha'
 
 export default function Login() {
   usePageMeta({ title: 'Entrar', noindex: true })
@@ -13,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { containerRef, execute, reset } = useHCaptcha()
 
   const redirectTo = location.state?.from ?? '/conta'
 
@@ -20,7 +22,18 @@ export default function Login() {
     event.preventDefault()
     setError('')
     setLoading(true)
-    const { error: signInError } = await signIn({ email, password })
+
+    let captchaToken
+    try {
+      captchaToken = await execute()
+    } catch {
+      setError('Não foi possível validar o captcha. Tente novamente.')
+      setLoading(false)
+      return
+    }
+
+    const { error: signInError } = await signIn({ email, password, captchaToken })
+    reset()
     setLoading(false)
     if (signInError) {
       setError(signInError.message)
@@ -58,6 +71,8 @@ export default function Login() {
         </label>
 
         {error && <p className="auth-card__error">{error}</p>}
+
+        <div ref={containerRef} />
 
         <button type="submit" className="btn btn--primary" disabled={loading}>
           {loading ? 'Entrando...' : 'Entrar'}

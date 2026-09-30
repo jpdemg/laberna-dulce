@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import usePageMeta from '../hooks/usePageMeta'
+import useHCaptcha from '../hooks/useHCaptcha'
 import { fetchAddressByCep } from '../lib/viacep'
 import { isValidName, isValidEmail, isValidPassword, isNotEmpty, isValidCep, isValidBrState } from '../lib/validators'
 
@@ -30,6 +31,7 @@ export default function SignUp() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const { containerRef, execute, reset } = useHCaptcha()
 
   const updateAddressField = (field) => (event) =>
     setAddress((current) => ({ ...current, [field]: event.target.value }))
@@ -75,7 +77,25 @@ export default function SignUp() {
     if (!validate()) return
 
     setLoading(true)
-    const { data, error: signUpError } = await signUp({ email, password, firstName, lastName, address })
+
+    let captchaToken
+    try {
+      captchaToken = await execute()
+    } catch {
+      setError('Não foi possível validar o captcha. Tente novamente.')
+      setLoading(false)
+      return
+    }
+
+    const { data, error: signUpError } = await signUp({
+      email,
+      password,
+      firstName,
+      lastName,
+      address,
+      captchaToken,
+    })
+    reset()
     setLoading(false)
 
     if (signUpError) {
@@ -242,6 +262,8 @@ export default function SignUp() {
         </fieldset>
 
         {error && <p className="auth-card__error">{error}</p>}
+
+        <div ref={containerRef} />
 
         <button type="submit" className="btn btn--primary" disabled={loading}>
           {loading ? 'Criando...' : 'Criar conta'}
