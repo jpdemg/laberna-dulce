@@ -20,10 +20,13 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const AccountLayout = lazy(() => import('./components/AccountLayout'))
 const AccountProfile = lazy(() => import('./pages/AccountProfile'))
 const AccountOrders = lazy(() => import('./pages/AccountOrders'))
+const AccountFavorites = lazy(() => import('./pages/AccountFavorites'))
 const AdminLayout = lazy(() => import('./components/AdminLayout'))
 const AdminProducts = lazy(() => import('./pages/AdminProducts'))
 const AdminProductForm = lazy(() => import('./pages/AdminProductForm'))
 const AdminOrders = lazy(() => import('./pages/AdminOrders'))
+const AdminReviews = lazy(() => import('./pages/AdminReviews'))
+const AdminMetrics = lazy(() => import('./pages/AdminMetrics'))
 const Cart = lazy(() => import('./pages/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const OrderStatus = lazy(() => import('./pages/OrderStatus'))
@@ -67,6 +70,7 @@ function App() {
                 >
                   <Route index element={<AccountProfile />} />
                   <Route path="pedidos" element={<AccountOrders />} />
+                  <Route path="favoritos" element={<AccountFavorites />} />
                 </Route>
                 <Route
                   path="admin"
@@ -80,6 +84,8 @@ function App() {
                   <Route path="produtos/novo" element={<AdminProductForm />} />
                   <Route path="produtos/:id" element={<AdminProductForm />} />
                   <Route path="pedidos" element={<AdminOrders />} />
+                  <Route path="avaliacoes" element={<AdminReviews />} />
+                  <Route path="metricas" element={<AdminMetrics />} />
                 </Route>
                 <Route path="carrinho" element={<Cart />} />
                 <Route

@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProductMedia from './ProductMedia'
+import FavoriteButton from './FavoriteButton'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
+import { useFavoriteIds } from '../hooks/useFavorites'
 import { formatBRL } from '../lib/format'
 
 export default function ProductGrid({ products }) {
   const { addItem } = useCart()
+  const { user } = useAuth()
+  const { isFavorite, toggleFavorite } = useFavoriteIds()
   const [addedId, setAddedId] = useState(null)
 
   const handleAdd = (product) => {
@@ -22,6 +27,13 @@ export default function ProductGrid({ products }) {
         <li key={product.id} className="product-card reveal" style={{ '--reveal-delay': `${(index % 4) * 0.12}s` }}>
           <Link to={`/produto/${product.id}`} className="product-card__link">
             <ProductMedia product={product} variant={index} seal tag={product.tag} reveal={false} />
+            {user && (
+              <FavoriteButton
+                className="product-card__favorite"
+                isFavorite={isFavorite(product.id)}
+                onToggle={() => toggleFavorite(product.id)}
+              />
+            )}
             <h3>{product.name}</h3>
           </Link>
           <p className="product-card__price">{formatBRL(product.price)}</p>

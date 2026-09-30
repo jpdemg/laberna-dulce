@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import ProductMedia from '../components/ProductMedia'
+import ProductGrid from '../components/ProductGrid'
 import StarRating from '../components/StarRating'
+import FavoriteButton from '../components/FavoriteButton'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-import { useProduct } from '../hooks/useProducts'
+import { useProduct, useRelatedProducts } from '../hooks/useProducts'
 import { useProductReviews } from '../hooks/useProductReviews'
+import { useFavoriteIds } from '../hooks/useFavorites'
 import usePageMeta from '../hooks/usePageMeta'
 import { categories } from '../data/site'
 import { formatBRL } from '../lib/format'
@@ -21,6 +24,8 @@ export default function ProductDetail() {
   const { product, loading } = useProduct(id)
   const { reviews, average, count, myReview, saving: savingReview, submitReview, deleteReview } =
     useProductReviews(id)
+  const { isFavorite, toggleFavorite } = useFavoriteIds()
+  const { products: relatedProducts } = useRelatedProducts(product?.category, id)
 
   const [activePhoto, setActivePhoto] = useState(0)
   const [sizeLabel, setSizeLabel] = useState(null)
@@ -168,7 +173,16 @@ export default function ProductDetail() {
 
         <div className="product-detail__info">
           {categoryLabel && <p className="eyebrow">{categoryLabel}</p>}
-          <h1>{product.name}</h1>
+          <div className="product-detail__title-row">
+            <h1>{product.name}</h1>
+            {user && (
+              <FavoriteButton
+                className="product-detail__favorite"
+                isFavorite={isFavorite(product.id)}
+                onToggle={() => toggleFavorite(product.id)}
+              />
+            )}
+          </div>
 
           {count > 0 ? (
             <a href="#avaliacoes" className="product-detail__rating-summary">
@@ -256,6 +270,13 @@ export default function ProductDetail() {
           <p className="product-detail__description">{product.description}</p>
         </div>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <section className="related-products">
+          <h2>Você também pode gostar</h2>
+          <ProductGrid products={relatedProducts} />
+        </section>
+      )}
 
       <section id="avaliacoes" className="product-reviews">
         <h2>Avaliações {count > 0 && `(${count})`}</h2>

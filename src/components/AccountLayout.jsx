@@ -24,6 +24,7 @@ export default function AccountLayout() {
           Meus dados
         </NavLink>
         <NavLink to="/conta/pedidos">Meus pedidos</NavLink>
+        <NavLink to="/conta/favoritos">Favoritos</NavLink>
       </nav>
 
       <div key={location.pathname} className="tab-content-fade">

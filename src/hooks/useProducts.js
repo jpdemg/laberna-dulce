@@ -90,6 +90,33 @@ export function useAllActiveProducts() {
   return { products, loading }
 }
 
+export function useRelatedProducts(category, excludeId) {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!category) {
+      setProducts([])
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    supabase
+      .from('products')
+      .select('*')
+      .eq('category', category)
+      .eq('active', true)
+      .neq('id', excludeId)
+      .limit(4)
+      .then(({ data }) => {
+        setProducts((data ?? []).map(withSizes))
+        setLoading(false)
+      })
+  }, [category, excludeId])
+
+  return { products, loading }
+}
+
 export function useAdminProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)

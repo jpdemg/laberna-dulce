@@ -15,6 +15,8 @@ export default function AdminLayout() {
           Produtos
         </NavLink>
         <NavLink to="/admin/pedidos">Pedidos</NavLink>
+        <NavLink to="/admin/avaliacoes">Avaliações</NavLink>
+        <NavLink to="/admin/metricas">Métricas</NavLink>
       </nav>
 
       <div key={location.pathname} className="tab-content-fade">

@@ -563,10 +563,59 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: relative;
 }
 
 .product-card__link h3:hover {
   color: var(--color-accent-dark);
+}
+
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+}
+
+.favorite-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transition: fill 0.2s ease;
+}
+
+.favorite-button:hover {
+  transform: scale(1.1);
+}
+
+.favorite-button.is-favorite {
+  color: #c1466f;
+}
+
+.favorite-button.is-favorite svg {
+  fill: currentColor;
+}
+
+.product-card__favorite {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favorite-button {
+    transition: none;
+  }
 }
 
 .product-card__price {
@@ -1162,6 +1211,28 @@
   color: var(--color-accent-dark);
 }
 
+.product-detail__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.product-detail__favorite {
+  background: var(--color-bg-alt);
+  flex-shrink: 0;
+}
+
+.related-products {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 3rem 1.5rem 0;
+}
+
+.related-products h2 {
+  margin-bottom: 1.5rem;
+}
+
 .product-detail__field {
   display: flex;
   flex-direction: column;
@@ -1678,6 +1749,92 @@
   .admin-products__row {
     transition: none;
   }
+}
+
+.admin-reviews__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-reviews__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.admin-reviews__row.is-removing {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.admin-reviews__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.admin-reviews__date {
+  color: var(--color-muted);
+}
+
+.admin-reviews__info p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.admin-metrics__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.admin-metrics__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+}
+
+.admin-metrics__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.admin-metrics__value {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--color-accent-dark);
+}
+
+.admin-metrics__top-products {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-left: 1.2rem;
+}
+
+.admin-metrics__top-products li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 480px;
 }
 
 .admin-products__thumb {

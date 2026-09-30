@@ -3,20 +3,22 @@ import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
 
 export function useProfile() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const refresh = useCallback(async () => {
+    if (authLoading) return
     if (!user) {
       setProfile(null)
       setLoading(false)
       return
     }
+    setLoading(true)
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
     setProfile(data)
     setLoading(false)
-  }, [user])
+  }, [user, authLoading])
 
   useEffect(() => {
     refresh()
