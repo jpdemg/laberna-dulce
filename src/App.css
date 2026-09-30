@@ -1125,6 +1125,133 @@
   padding-top: 1.25rem;
 }
 
+/* Avaliações */
+.star-rating {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+.star-rating__star {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-line);
+  cursor: default;
+}
+
+.star-rating--interactive .star-rating__star {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.star-rating--interactive .star-rating__star:hover {
+  transform: scale(1.15);
+}
+
+.star-rating__star svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.star-rating__star.is-filled {
+  color: var(--color-accent);
+}
+
+.product-detail__rating-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.product-detail__rating-summary--empty {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.product-reviews {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+  border-top: 1px solid var(--color-line);
+}
+
+.product-reviews h2 {
+  margin-bottom: 1.5rem;
+}
+
+.product-reviews__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+}
+
+.product-reviews__form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.7em 0.9em;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.product-reviews__form-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.product-reviews__login-hint {
+  margin-bottom: 2rem;
+  color: var(--color-muted);
+}
+
+.product-reviews__login-hint a {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.product-reviews__empty {
+  color: var(--color-muted);
+}
+
+.product-reviews__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 640px;
+}
+
+.product-reviews__item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.product-reviews__date {
+  color: var(--color-muted);
+}
+
+.product-reviews__item p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
 /* Autenticação */
 .auth-page {
   max-width: 480px;

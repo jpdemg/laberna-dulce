@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import ProductMedia from '../components/ProductMedia'
+import StarRating from '../components/StarRating'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import { useProduct } from '../hooks/useProducts'
+import { useProductReviews } from '../hooks/useProductReviews'
 import usePageMeta from '../hooks/usePageMeta'
 import { categories } from '../data/site'
 import { formatBRL } from '../lib/format'
@@ -14,13 +17,26 @@ export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { addItem } = useCart()
+  const { user } = useAuth()
   const { product, loading } = useProduct(id)
+  const { reviews, average, count, myReview, saving: savingReview, submitReview, deleteReview } =
+    useProductReviews(id)
 
   const [activePhoto, setActivePhoto] = useState(0)
   const [sizeLabel, setSizeLabel] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [notes, setNotes] = useState('')
   const [added, setAdded] = useState(false)
+  const [reviewRating, setReviewRating] = useState(myReview?.rating ?? 5)
+  const [reviewComment, setReviewComment] = useState(myReview?.comment ?? '')
+  const [reviewSaved, setReviewSaved] = useState(false)
+
+  useEffect(() => {
+    if (myReview) {
+      setReviewRating(myReview.rating)
+      setReviewComment(myReview.comment ?? '')
+    }
+  }, [myReview])
 
   usePageMeta({
     title: product?.name,
@@ -61,6 +77,24 @@ export default function ProductDetail() {
   const handleBuyNow = () => {
     addItem(buildCartItem(), quantity)
     navigate('/checkout')
+  }
+
+  const handleSubmitReview = async (event) => {
+    event.preventDefault()
+    setReviewSaved(false)
+    const { error } = await submitReview({ rating: reviewRating, comment: reviewComment })
+    if (!error) {
+      setReviewSaved(true)
+      setTimeout(() => setReviewSaved(false), 2000)
+    }
+  }
+
+  const handleDeleteReview = async () => {
+    if (!myReview) return
+    if (!window.confirm('Excluir sua avaliação deste produto?')) return
+    await deleteReview(myReview.id)
+    setReviewRating(5)
+    setReviewComment('')
   }
 
   return (
@@ -135,6 +169,20 @@ export default function ProductDetail() {
         <div className="product-detail__info">
           {categoryLabel && <p className="eyebrow">{categoryLabel}</p>}
           <h1>{product.name}</h1>
+
+          {count > 0 ? (
+            <a href="#avaliacoes" className="product-detail__rating-summary">
+              <StarRating value={average} size={16} />
+              <span>
+                {average.toFixed(1)} ({count} {count === 1 ? 'avaliação' : 'avaliações'})
+              </span>
+            </a>
+          ) : (
+            <a href="#avaliacoes" className="product-detail__rating-summary product-detail__rating-summary--empty">
+              Seja o primeiro a avaliar
+            </a>
+          )}
+
           <p className="product-detail__price">{formatBRL(unitPrice)}</p>
 
           <div className="product-detail__field">
@@ -188,6 +236,56 @@ export default function ProductDetail() {
           <p className="product-detail__description">{product.description}</p>
         </div>
       </div>
+
+      <section id="avaliacoes" className="product-reviews">
+        <h2>Avaliações {count > 0 && `(${count})`}</h2>
+
+        {user ? (
+          <form className="product-reviews__form" onSubmit={handleSubmitReview}>
+            <p>{myReview ? 'Editar minha avaliação' : 'Deixe sua avaliação'}</p>
+            <StarRating value={reviewRating} onChange={setReviewRating} size={26} />
+            <textarea
+              placeholder="Conte como foi sua experiência com esse produto (opcional)"
+              value={reviewComment}
+              onChange={(e) => setReviewComment(e.target.value)}
+              rows={3}
+            />
+            <div className="product-reviews__form-actions">
+              <button type="submit" className="btn btn--primary" disabled={savingReview}>
+                {savingReview ? 'Salvando...' : reviewSaved ? 'Salvo ✓' : myReview ? 'Atualizar avaliação' : 'Enviar avaliação'}
+              </button>
+              {myReview && (
+                <button type="button" className="btn btn--outline" onClick={handleDeleteReview}>
+                  Excluir avaliação
+                </button>
+              )}
+            </div>
+          </form>
+        ) : (
+          <p className="product-reviews__login-hint">
+            <Link to="/login">Entre na sua conta</Link> pra deixar uma avaliação.
+          </p>
+        )}
+
+        {reviews.length === 0 ? (
+          <p className="product-reviews__empty">Esse produto ainda não tem avaliações.</p>
+        ) : (
+          <ul className="product-reviews__list">
+            {reviews.map((review) => (
+              <li key={review.id} className="product-reviews__item">
+                <div className="product-reviews__item-header">
+                  <StarRating value={review.rating} size={16} />
+                  <strong>{review.reviewer_name}</strong>
+                  <span className="product-reviews__date">
+                    {new Date(review.created_at).toLocaleDateString('pt-BR')}
+                  </span>
+                </div>
+                {review.comment && <p>{review.comment}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   )
 }
