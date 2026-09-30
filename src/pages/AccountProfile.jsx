@@ -274,7 +274,11 @@ export default function AccountProfile() {
           </p>
         )}
 
-        <button type="submit" className="btn btn--primary" disabled={saving || profileLoading}>
+        <button
+          type="submit"
+          className={`btn btn--primary btn--confirm-pulse ${saved ? 'is-confirmed' : ''}`}
+          disabled={saving || profileLoading}
+        >
           {saving ? 'Salvando...' : saved ? 'Salvo ✓' : 'Salvar dados'}
         </button>
       </form>
@@ -320,7 +324,11 @@ export default function AccountProfile() {
 
           <div ref={containerRef} />
 
-          <button type="submit" className="btn btn--outline" disabled={passwordSaving}>
+          <button
+            type="submit"
+            className={`btn btn--outline btn--confirm-pulse ${passwordSaved ? 'is-confirmed' : ''}`}
+            disabled={passwordSaving}
+          >
             {passwordSaving ? 'Salvando...' : passwordSaved ? 'Senha alterada ✓' : 'Trocar senha'}
           </button>
         </fieldset>

@@ -80,7 +80,7 @@ export default function AccountOrders() {
                 <span>{new Date(order.created_at).toLocaleDateString('pt-BR')}</span>
                 <span>{formatBRL(order.total)}</span>
                 <span>{paymentMethodLabels[order.payment_method] ?? '—'}</span>
-                <span className={`order-status order-status--${order.status}`}>
+                <span key={order.status} className={`order-status order-status--${order.status}`}>
                   {statusLabels[order.status] ?? order.status}
                 </span>
               </div>

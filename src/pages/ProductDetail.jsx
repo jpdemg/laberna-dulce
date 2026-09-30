@@ -271,7 +271,11 @@ export default function ProductDetail() {
               rows={3}
             />
             <div className="product-reviews__form-actions">
-              <button type="submit" className="btn btn--primary" disabled={savingReview}>
+              <button
+                type="submit"
+                className={`btn btn--primary btn--confirm-pulse ${reviewSaved ? 'is-confirmed' : ''}`}
+                disabled={savingReview}
+              >
                 {savingReview ? 'Salvando...' : reviewSaved ? 'Salvo ✓' : myReview ? 'Atualizar avaliação' : 'Enviar avaliação'}
               </button>
               {myReview && (

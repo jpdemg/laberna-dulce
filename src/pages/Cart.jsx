@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import usePageMeta from '../hooks/usePageMeta'
@@ -7,6 +8,15 @@ export default function Cart() {
   usePageMeta({ title: 'Carrinho', noindex: true })
 
   const { items, setQuantity, removeItem, subtotal } = useCart()
+  const [removingKey, setRemovingKey] = useState(null)
+
+  const handleRemove = (lineKey) => {
+    setRemovingKey(lineKey)
+    setTimeout(() => {
+      removeItem(lineKey)
+      setRemovingKey(null)
+    }, 280)
+  }
 
   if (items.length === 0) {
     return (
@@ -26,7 +36,10 @@ export default function Cart() {
 
       <ul className="cart-list">
         {items.map((item) => (
-          <li key={item.lineKey} className="cart-list__item">
+          <li
+            key={item.lineKey}
+            className={`cart-list__item ${removingKey === item.lineKey ? 'is-removing' : ''}`}
+          >
             <span className="cart-list__name">
               {item.name}
               {item.size && <span className="cart-list__size"> · Tamanho {item.size}</span>}
@@ -42,7 +55,7 @@ export default function Cart() {
               </button>
             </div>
             <span className="cart-list__price">{formatBRL(item.price * item.quantity)}</span>
-            <button type="button" className="cart-list__remove" onClick={() => removeItem(item.lineKey)}>
+            <button type="button" className="cart-list__remove" onClick={() => handleRemove(item.lineKey)}>
               Remover
             </button>
           </li>

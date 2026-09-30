@@ -26,6 +26,7 @@ export default function AdminProductForm() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [removingUrl, setRemovingUrl] = useState(null)
 
   useEffect(() => {
     if (!isEditing) return
@@ -70,7 +71,11 @@ export default function AdminProductForm() {
   }
 
   const removePhoto = (url) => {
-    setProduct((current) => ({ ...current, images: current.images.filter((image) => image !== url) }))
+    setRemovingUrl(url)
+    setTimeout(() => {
+      setProduct((current) => ({ ...current, images: current.images.filter((image) => image !== url) }))
+      setRemovingUrl(null)
+    }, 250)
   }
 
   const handleSubmit = async (event) => {
@@ -195,7 +200,7 @@ export default function AdminProductForm() {
         </p>
         <div className="admin-product-form__photos">
           {product.images.map((url) => (
-            <div key={url} className="admin-product-form__photo">
+            <div key={url} className={`admin-product-form__photo ${removingUrl === url ? 'is-removing' : ''}`}>
               <img src={url} alt="" />
               <button type="button" onClick={() => removePhoto(url)}>
                 Remover

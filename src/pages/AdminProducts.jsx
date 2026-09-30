@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAdminProducts } from '../hooks/useProducts'
 import { supabase } from '../lib/supabaseClient'
@@ -7,6 +8,7 @@ import { categories } from '../data/site'
 
 export default function AdminProducts() {
   const { products, loading, refresh } = useAdminProducts()
+  const [deletingId, setDeletingId] = useState(null)
 
   const toggleActive = async (product) => {
     await supabase.from('products').update({ active: !product.active }).eq('id', product.id)
@@ -15,8 +17,12 @@ export default function AdminProducts() {
 
   const handleDelete = async (product) => {
     if (!window.confirm(`Remover "${product.name}" do catálogo? Essa ação não pode ser desfeita.`)) return
-    await supabase.from('products').delete().eq('id', product.id)
-    refresh()
+    setDeletingId(product.id)
+    setTimeout(async () => {
+      await supabase.from('products').delete().eq('id', product.id)
+      await refresh()
+      setDeletingId(null)
+    }, 280)
   }
 
   return (
@@ -33,7 +39,10 @@ export default function AdminProducts() {
       {!loading && (
         <ul className="admin-products__list">
           {products.map((product) => (
-            <li key={product.id} className="admin-products__row">
+            <li
+              key={product.id}
+              className={`admin-products__row ${deletingId === product.id ? 'is-removing' : ''}`}
+            >
               <ProductMedia product={product} className="admin-products__thumb" reveal={false} />
               <div className="admin-products__info">
                 <strong>{product.name}</strong>
@@ -54,9 +63,10 @@ export default function AdminProducts() {
                 <button
                   type="button"
                   className="btn btn--outline account-page__cancel"
+                  disabled={deletingId === product.id}
                   onClick={() => handleDelete(product)}
                 >
-                  Excluir
+                  {deletingId === product.id ? 'Excluindo...' : 'Excluir'}
                 </button>
               </div>
             </li>
