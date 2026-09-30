@@ -7,9 +7,10 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  httpClient: Stripe.createFetchHttpClient(),
-})
+// O Stripe só é inicializado quando o pedido já foi pago (única situação
+// que precisa dele, pro reembolso). Construir o cliente incondicionalmente
+// aqui em cima já travou a função inteira num pedido pendente, por uma
+// incompatibilidade do SDK do Stripe com o runtime atual do Supabase.
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -70,6 +71,9 @@ Deno.serve(async (req) => {
       }
 
       try {
+        const stripe = new Stripe(STRIPE_SECRET_KEY, {
+          httpClient: Stripe.createFetchHttpClient(),
+        })
         await stripe.refunds.create({ payment_intent: order.stripe_payment_intent_id })
       } catch (error) {
         return json({ error: 'Não foi possível processar o reembolso', details: (error as Error).message }, 502)
