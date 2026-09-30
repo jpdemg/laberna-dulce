@@ -16,7 +16,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const { containerRef, execute, reset } = useHCaptcha()
 
-  const redirectTo = location.state?.from ?? '/conta'
+  const redirectTo = location.state?.from ?? '/'
 
   const handleSubmit = async (event) => {
     event.preventDefault()

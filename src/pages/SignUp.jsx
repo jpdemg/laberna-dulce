@@ -158,7 +158,7 @@ export default function SignUp() {
     }
 
     if (data.session) {
-      navigate('/conta', { replace: true })
+      navigate('/', { replace: true })
       return
     }
 
